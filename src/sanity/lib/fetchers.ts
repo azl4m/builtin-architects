@@ -25,7 +25,9 @@ async function safeFetch<T>(query: string, params: Record<string, unknown>, fall
   if (!client) return fallbackValue;
 
   try {
-    const result = await client.fetch<T>(query, params, { next: { tags: [CONTENT_TAG] } });
+    const result = await client.fetch<T>(query, params, {
+      next: { tags: [CONTENT_TAG], revalidate: 60 },
+    });
     if (result === null || result === undefined) return fallbackValue;
     if (Array.isArray(result) && result.length === 0) return fallbackValue;
     return result;

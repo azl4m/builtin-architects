@@ -14,11 +14,20 @@ export default function PlaceholderImage({ label, className = "", badge }: Place
     <div
       role="img"
       aria-label={label}
-      className={`relative flex items-center justify-center overflow-hidden bg-[linear-gradient(135deg,#e4ddd0_0%,#cfc6b4_50%,#e4ddd0_100%)] ${className}`}
+      style={{
+        backgroundImage:
+          "repeating-linear-gradient(45deg, rgba(169,129,74,0.07) 0px, rgba(169,129,74,0.07) 1px, transparent 1px, transparent 13px), linear-gradient(135deg, #efeae0 0%, #e4ddd0 55%, #efeae0 100%)",
+      }}
+      className={`relative flex items-center justify-center overflow-hidden ${className}`}
     >
-      <span className="px-6 text-center font-sans text-[13px] tracking-[0.5px] text-ink/50">
-        {label}
-      </span>
+      <div className="flex flex-col items-center gap-3 px-6 text-center">
+        <span className="flex h-11 w-11 items-center justify-center rounded-full border border-accent/35 font-serif text-lg text-accent">
+          B
+        </span>
+        <span className="font-sans text-[11px] font-semibold tracking-[2px] text-ink/40 uppercase">
+          {label}
+        </span>
+      </div>
       {badge ? (
         <span className="absolute top-4 left-4 bg-ivory px-3.5 py-1.5 text-[10px] font-bold tracking-[1px] text-ink uppercase">
           {badge}

@@ -37,8 +37,10 @@ export default function SmartImage({
     return <PlaceholderImage label={label} className={className} badge={badge} />;
   }
 
+  const hasPosition = /(^|\s)(relative|absolute|fixed|sticky)(\s|$)/.test(className);
+
   return (
-    <div className={`relative overflow-hidden ${className}`}>
+    <div className={`${hasPosition ? "" : "relative"} overflow-hidden ${className}`}>
       <Image src={src} alt={alt} fill sizes={sizes} priority={priority} className="object-cover" />
       {badge ? (
         <span className="absolute top-4 left-4 bg-ivory px-3.5 py-1.5 text-[10px] font-bold tracking-[1px] text-ink uppercase">
