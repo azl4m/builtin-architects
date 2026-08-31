@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getProjectSlugs } from "@/sanity/lib/fetchers";
+import { getProjectSlugs, getServiceSlugs } from "@/sanity/lib/fetchers";
 import { SITE_URL } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -8,11 +8,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
   }));
 
-  const slugs = await getProjectSlugs();
-  const projectRoutes = slugs.map((slug) => ({
+  const [projectSlugs, serviceSlugs] = await Promise.all([
+    getProjectSlugs(),
+    getServiceSlugs(),
+  ]);
+
+  const projectRoutes = projectSlugs.map((slug) => ({
     url: `${SITE_URL}/projects/${slug}`,
     lastModified: new Date(),
   }));
 
-  return [...staticRoutes, ...projectRoutes];
+  const serviceRoutes = serviceSlugs.map((slug) => ({
+    url: `${SITE_URL}/services/${slug}`,
+    lastModified: new Date(),
+  }));
+
+  return [...staticRoutes, ...projectRoutes, ...serviceRoutes];
 }

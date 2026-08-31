@@ -19,49 +19,60 @@ const manrope = Manrope({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: {
-    default: `${SITE_NAME} — ${SITE_TAGLINE}`,
-    template: `%s | ${SITE_NAME}`,
-  },
-  description:
-    "BUILTIN Developers & Interiors is a Kerala-based architecture, interior design, and construction studio delivering projects from first sketch to final handover.",
-  openGraph: {
-    type: "website",
-    siteName: SITE_NAME,
-    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
-    description:
-      "Architecture, interior design, and construction under one roof. From first sketch to final handover.",
-    url: SITE_URL,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
-    description:
-      "Architecture, interior design, and construction under one roof. From first sketch to final handover.",
-  },
-  alternates: {
-    canonical: "/",
-  },
-};
+import { getSiteSettings } from "@/sanity/lib/fetchers";
 
-/**
- * Deliberately minimal: /studio renders the Sanity Studio full-screen and
- * must not inherit site chrome. Header/CTABand/Footer live in the (site)
- * route group's layout instead.
- */
-export default function RootLayout({
+export async function generateMetadata(): Promise<Metadata> {
+  const siteSettings = await getSiteSettings();
+  
+  const titleDefault = `${siteSettings.siteName} ${siteSettings.siteNameSub} — ${siteSettings.tagline}`;
+  const desc = siteSettings.defaultSeo?.metaDescription || siteSettings.description;
+  const canonical = siteSettings.defaultSeo?.canonicalUrl || "/";
+
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: titleDefault,
+      template: `%s | ${siteSettings.siteName}`,
+    },
+    description: desc,
+    openGraph: {
+      type: "website",
+      siteName: siteSettings.siteName,
+      title: siteSettings.defaultSeo?.ogTitle || titleDefault,
+      description: siteSettings.defaultSeo?.ogDescription || desc,
+      url: SITE_URL,
+      images: siteSettings.defaultSeo?.ogImage ? [{ url: siteSettings.defaultSeo.ogImage.asset?.url || "" }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: siteSettings.defaultSeo?.ogTitle || titleDefault,
+      description: siteSettings.defaultSeo?.ogDescription || desc,
+    },
+    alternates: {
+      canonical,
+    },
+    icons: {
+      icon: "/icon.png",
+      shortcut: "/icon.png",
+      apple: "/icon.png",
+    },
+    robots: siteSettings.defaultSeo?.noIndex ? { index: false, follow: true } : undefined,
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const siteSettings = await getSiteSettings();
+
   return (
     <html lang="en" className={`${sora.variable} ${manrope.variable}`}>
       <body className="antialiased">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd()) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd(siteSettings)) }}
         />
         <MotionConfig reducedMotion="user">{children}</MotionConfig>
       </body>

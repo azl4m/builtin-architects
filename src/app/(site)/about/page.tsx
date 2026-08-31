@@ -5,12 +5,24 @@ import AnimatedStat from "@/components/AnimatedStat";
 import DimensionLine from "@/components/DimensionLine";
 import { getAboutPage, getSiteSettings } from "@/sanity/lib/fetchers";
 
-export const metadata: Metadata = {
-  title: "About Us",
-  description:
-    "BUILTIN Developers & Interiors brings architecture, interiors, and construction under one roof — a full-service studio delivering projects across Kerala.",
-  alternates: { canonical: "/about" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const about = await getAboutPage();
+  const seoTitle = about.seo?.metaTitle || "About Us | BUILTIN Developers & Interiors";
+  const seoDesc = about.seo?.metaDescription || "BUILTIN Developers & Interiors brings architecture, interiors, and construction under one roof — a full-service studio delivering projects across Kerala.";
+  const canonical = about.seo?.canonicalUrl || "/about";
+
+  return {
+    title: seoTitle,
+    description: seoDesc,
+    alternates: { canonical },
+    openGraph: {
+      title: about.seo?.ogTitle || seoTitle,
+      description: about.seo?.ogDescription || seoDesc,
+      images: about.seo?.ogImage ? [{ url: about.seo.ogImage.asset?.url || "" }] : [],
+    },
+    robots: about.seo?.noIndex ? { index: false, follow: true } : undefined,
+  };
+}
 
 export default async function AboutPage() {
   const [about, siteSettings] = await Promise.all([getAboutPage(), getSiteSettings()]);
@@ -48,16 +60,26 @@ export default async function AboutPage() {
           <h2 className="mb-7 font-display text-[42px] leading-[1.15] font-semibold max-md:text-[30px]">
             {about.storyHeading}
           </h2>
+          {about.introduction && (
+            <p className="text-lg leading-[1.75] font-semibold text-accent mb-6">
+              {about.introduction}
+            </p>
+          )}
           {about.storyParagraphs.map((paragraph, i) => (
             <p
               key={i}
               className={`text-base leading-[1.85] text-body ${
-                i === about.storyParagraphs.length - 1 ? "" : "mb-5"
+                i === about.storyParagraphs.length - 1 && !about.experience ? "" : "mb-5"
               }`}
             >
               {paragraph}
             </p>
           ))}
+          {about.experience && (
+            <p className="text-base leading-[1.85] text-body font-medium text-copy-dark mt-6 border-l-2 border-accent pl-4">
+              {about.experience}
+            </p>
+          )}
         </div>
         <SmartImage
           image={about.storyImage}

@@ -33,6 +33,29 @@ export default defineType({
       of: [{ type: "processStep" }],
       validation: (rule) => rule.max(4),
     }),
+    defineField({
+      name: "introduction",
+      title: "Introduction text",
+      type: "text",
+      rows: 3,
+    }),
+    defineField({
+      name: "experience",
+      title: "Experience details",
+      type: "text",
+      rows: 3,
+    }),
+    defineField({
+      name: "capabilities",
+      title: "Company Capabilities",
+      type: "array",
+      of: [{ type: "string" }],
+    }),
+    defineField({
+      name: "seo",
+      title: "SEO Settings",
+      type: "seo",
+    }),
   ],
   preview: {
     prepare: () => ({ title: "About Page" }),

@@ -9,7 +9,7 @@ export default defineType({
       name: "heroEyebrow",
       title: "Hero eyebrow",
       type: "string",
-      initialValue: "Architecture · Interior · Construction",
+      initialValue: "Architecture · Interior · Contracting · Construction",
     }),
     defineField({ name: "heroHeadline", title: "Hero headline", type: "string" }),
     defineField({ name: "heroSubcopy", title: "Hero subcopy", type: "text", rows: 3 }),
@@ -20,6 +20,30 @@ export default defineType({
       description:
         "Uploads and streams through Mux. When set, this autoplays (muted, looped) behind the hero text instead of the hero image. Leave empty to keep using the hero image.",
       type: "mux.video",
+    }),
+    defineField({
+      name: "heroCtaLabel",
+      title: "Hero Primary CTA Label",
+      type: "string",
+      initialValue: "Explore projects",
+    }),
+    defineField({
+      name: "heroCtaLink",
+      title: "Hero Primary CTA Link",
+      type: "string",
+      initialValue: "/projects",
+    }),
+    defineField({
+      name: "heroCtaSecondaryLabel",
+      title: "Hero Secondary CTA Label",
+      type: "string",
+      initialValue: "Start discussion",
+    }),
+    defineField({
+      name: "heroCtaSecondaryLink",
+      title: "Hero Secondary CTA Link",
+      type: "string",
+      initialValue: "/contact",
     }),
 
     defineField({ name: "aboutEyebrow", title: "About excerpt eyebrow", type: "string", initialValue: "At BUILTIN" }),
@@ -66,6 +90,29 @@ export default defineType({
       title: "Client logos",
       type: "array",
       of: [{ type: "image" }],
+    }),
+    defineField({
+      name: "galleryEyebrow",
+      title: "Gallery Eyebrow",
+      type: "string",
+      initialValue: "Visual Showcase",
+    }),
+    defineField({
+      name: "galleryHeading",
+      title: "Gallery Heading",
+      type: "string",
+      initialValue: "Our Work Gallery",
+    }),
+    defineField({
+      name: "galleryImages",
+      title: "Gallery Images",
+      type: "array",
+      of: [{ type: "image", options: { hotspot: true } }],
+    }),
+    defineField({
+      name: "seo",
+      title: "SEO Settings",
+      type: "seo",
     }),
   ],
   preview: {

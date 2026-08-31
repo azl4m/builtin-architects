@@ -24,14 +24,20 @@ export async function generateMetadata({ params }: ProjectDetailPageProps): Prom
   const project = await getProjectBySlug(slug);
   if (!project) return {};
 
+  const seoTitle = project.seo?.metaTitle || `${project.title} | BUILTIN Developers & Interiors`;
+  const seoDesc = project.seo?.metaDescription || `${project.tagline} — ${project.scope} for ${project.client} in ${project.location}.`;
+  const canonical = project.seo?.canonicalUrl || `/projects/${project.slug}`;
+
   return {
-    title: project.title,
-    description: `${project.tagline} — ${project.scope} for ${project.client} in ${project.location}.`,
-    alternates: { canonical: `/projects/${project.slug}` },
+    title: seoTitle,
+    description: seoDesc,
+    alternates: { canonical },
     openGraph: {
-      title: project.title,
-      description: project.tagline,
+      title: project.seo?.ogTitle || seoTitle,
+      description: project.seo?.ogDescription || seoDesc,
+      images: project.seo?.ogImage ? [{ url: project.seo.ogImage.asset?.url || "" }] : [],
     },
+    robots: project.seo?.noIndex ? { index: false, follow: true } : undefined,
   };
 }
 

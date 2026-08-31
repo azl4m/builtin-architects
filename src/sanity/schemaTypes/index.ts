@@ -10,6 +10,8 @@ import aboutPage from "./aboutPage";
 import servicesPage from "./servicesPage";
 import projectsPage from "./projectsPage";
 import contactPage from "./contactPage";
+import seo from "./seo";
+import faq from "./faq";
 import { statItem, processStep } from "./objects";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
@@ -27,6 +29,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     projectsPage,
     contactPage,
     // Reusable objects
+    seo,
+    faq,
     statItem,
     processStep,
   ],

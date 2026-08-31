@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import SmartImage from "@/components/SmartImage";
 import Reveal from "@/components/Reveal";
 import { getServices, getServicesPage } from "@/sanity/lib/fetchers";
@@ -6,7 +7,7 @@ import { getServices, getServicesPage } from "@/sanity/lib/fetchers";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Architecture, interior design, and construction — three disciplines coordinated end to end by one accountable BUILTIN team, from concept to handover.",
+    "Architecture, interior design, interior contracting, and building construction — four disciplines coordinated from concept to completion by one accountable BUILTIN team.",
   alternates: { canonical: "/services" },
 };
 
@@ -18,7 +19,7 @@ function FeatureRow({ children }: { children: React.ReactNode }) {
   );
 }
 
-const GHOST_COLORS = ["#dce3f2", "#c9d3ea", "#dce3f2"];
+const GHOST_COLORS = ["#dce3f2", "#c9d3ea", "#dce3f2", "#c9d3ea"];
 
 export default async function ServicesPage() {
   const [servicesPage, services] = await Promise.all([getServicesPage(), getServices()]);
@@ -60,17 +61,20 @@ export default async function ServicesPage() {
       </section>
 
       <section className="relative z-[3] mx-auto -mt-16 max-w-[1400px] px-16 max-md:mt-0 max-md:px-6">
-        <div className="grid grid-cols-3 gap-10 bg-ink px-14 py-12 text-ivory shadow-[0_30px_60px_rgba(10,20,40,0.25)] max-md:grid-cols-1 max-md:gap-8 max-md:px-8 max-md:py-8">
+        <div className="grid grid-cols-4 gap-10 bg-ink px-14 py-12 text-ivory shadow-[0_30px_60px_rgba(10,20,40,0.25)] max-lg:grid-cols-2 max-md:grid-cols-1 max-md:gap-8 max-md:px-8 max-md:py-8">
           {services.map((s, i) => (
-            <div
+            <Link
               key={s._id}
-              className={i < services.length - 1 ? "border-r border-hairline-dark pr-10 max-md:border-r-0 max-md:pr-0" : ""}
+              href={`/services/${s.slug}`}
+              className={`block hover:opacity-90 transition-opacity ${
+                i < services.length - 1 ? "border-r border-hairline-dark pr-10 max-lg:border-r-0 max-lg:pr-0" : ""
+              }`}
             >
-              <div className="mb-1.5 font-display text-[34px] text-accent-light">
+              <div className="mb-1.5 font-display text-[28px] text-accent-light leading-tight">
                 {s.numberLabel} — {s.title}
               </div>
-              <div className="text-sm leading-[1.6] text-footer-muted">{s.statCaption}</div>
-            </div>
+              <div className="text-xs leading-[1.6] text-footer-muted">{s.statCaption}</div>
+            </Link>
           ))}
         </div>
       </section>
@@ -80,7 +84,7 @@ export default async function ServicesPage() {
         return (
           <section
             key={service._id}
-            className={`${i === 1 ? "bg-alt" : ""} ${
+            className={`${i % 2 === 1 ? "bg-alt" : ""} ${
               i === 0
                 ? "pt-[160px] pb-[140px] max-md:pt-24 max-md:pb-20"
                 : i === services.length - 1
@@ -100,11 +104,17 @@ export default async function ServicesPage() {
                   {service.title}
                 </h2>
                 <p className="mb-7 text-base leading-[1.85] text-body">{service.fullDescription}</p>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 mb-8">
                   {service.features.map((feature) => (
                     <FeatureRow key={feature}>{feature}</FeatureRow>
                   ))}
                 </div>
+                <Link
+                  href={`/services/${service.slug}`}
+                  className="inline-block border-b-2 border-accent pb-1 text-sm font-bold tracking-[1px] text-ink uppercase hover:text-accent transition-colors"
+                >
+                  View Details & Projects →
+                </Link>
               </div>
               <div className={`group overflow-hidden rounded-[4px] ${imageFirst ? "order-1" : ""}`}>
                 <SmartImage

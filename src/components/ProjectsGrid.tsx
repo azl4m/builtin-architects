@@ -5,7 +5,13 @@ import Link from "next/link";
 import SmartImage from "@/components/SmartImage";
 import type { CmsProject, ProjectCategory } from "@/sanity/lib/types";
 
-const TABS: ("All" | ProjectCategory)[] = ["All", "Architecture", "Interior", "Construction"];
+const TABS: ("All" | ProjectCategory)[] = [
+  "All",
+  "Architecture",
+  "Interior Design",
+  "Interior Contracting",
+  "Building Construction",
+];
 
 interface ProjectsGridProps {
   featured: CmsProject;

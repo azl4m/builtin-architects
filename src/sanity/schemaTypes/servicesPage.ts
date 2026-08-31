@@ -9,6 +9,11 @@ export default defineType({
     defineField({ name: "heroHeading", title: "Hero heading", type: "string" }),
     defineField({ name: "heroSubcopy", title: "Hero subcopy", type: "text", rows: 3 }),
     defineField({ name: "heroImage", title: "Hero image", type: "image", options: { hotspot: true } }),
+    defineField({
+      name: "seo",
+      title: "SEO Settings",
+      type: "seo",
+    }),
   ],
   preview: {
     prepare: () => ({ title: "Services Page" }),

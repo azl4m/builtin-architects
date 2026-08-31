@@ -27,7 +27,7 @@ export default function ProjectScrollytelling({ items }: ProjectScrollytellingPr
       {items.map((item, i) => (
         <motion.div
           key={i}
-          className="relative h-[72vh] min-h-[380px] overflow-hidden rounded-[4px] max-md:h-[52vh] max-md:min-h-[300px]"
+          className="relative h-[72vh] min-h-[380px] w-full max-w-[1000px] mx-auto overflow-hidden rounded-[4px] max-md:h-[52vh] max-md:min-h-[300px]"
           initial={{ opacity: 0, scale: 1.06 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, amount: 0.35 }}
@@ -35,11 +35,11 @@ export default function ProjectScrollytelling({ items }: ProjectScrollytellingPr
         >
           <SmartImage image={item.image} alt={item.alt} label={item.label} className="absolute inset-0 h-full w-full" />
           {item.caption ? (
-            <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,transparent_0%,rgba(10,20,40,0.75)_100%)] px-8 pt-24 pb-8 max-md:px-5 max-md:pt-16 max-md:pb-6">
+            <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,transparent_0%,rgba(10,20,40,0.6)_100%)] px-8 pt-14 pb-5 max-md:px-5 max-md:pt-10 max-md:pb-4">
               <motion.p
-                className="max-w-[620px] font-display text-2xl font-semibold leading-tight text-ivory max-md:text-lg"
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                className="max-w-[620px] font-display text-base font-semibold leading-tight text-ivory max-md:text-sm"
+                initial={{ opacity: 0, x: -60 }}
+                whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, amount: 0.6 }}
                 transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
               >

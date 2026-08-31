@@ -1,6 +1,10 @@
 export type ProjectStatus = "In Progress" | "Under Construction" | "Completed";
 
-export type ProjectCategory = "Architecture" | "Interior" | "Construction";
+export type ProjectCategory =
+  | "Architecture"
+  | "Interior Design"
+  | "Interior Contracting"
+  | "Building Construction";
 
 export interface Project {
   slug: string;
@@ -61,7 +65,7 @@ export const PROJECTS: Project[] = [
     location: "Omassery, Kerala",
     status: "Completed",
     scope: "Interior Design & Styling",
-    category: "Interior",
+    category: "Interior Design",
     cardTitle: "Minimalist Interior",
     cardMeta: ["1,300 sq.ft · Omassery", "Interior Design & Styling"],
     tagline: "A calm, uncluttered home built on restraint",
@@ -78,7 +82,7 @@ export const PROJECTS: Project[] = [
     location: "Kasaragod, Kerala",
     status: "Under Construction",
     scope: "Full-Scale Residential Construction",
-    category: "Construction",
+    category: "Building Construction",
     cardTitle: "Private Residence Build",
     cardMeta: ["Kasaragod, Kerala", "Full-Scale Residential Construction"],
     tagline: "Full-scale construction, built to the drawing",
@@ -95,7 +99,7 @@ export const PROJECTS: Project[] = [
     location: "Kozhikode, Kerala",
     status: "Completed",
     scope: "Interior Design & Execution",
-    category: "Interior",
+    category: "Interior Design",
     cardTitle: "Commercial Interior Fit-Out",
     cardMeta: ["3,200 sq.ft · Kozhikode", "Interior Design & Execution"],
     tagline: "A commercial space designed around the brand",
@@ -112,7 +116,7 @@ export const PROJECTS: Project[] = [
     location: "Malappuram, Kerala",
     status: "Completed",
     scope: "Architecture & Construction",
-    category: "Construction",
+    category: "Building Construction",
     cardTitle: "Institutional Campus Building",
     cardMeta: ["12,000 sq.ft · Malappuram", "Architecture & Construction"],
     tagline: "A classroom building designed for daylight and calm",

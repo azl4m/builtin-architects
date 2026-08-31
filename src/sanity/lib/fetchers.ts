@@ -25,8 +25,12 @@ async function safeFetch<T>(query: string, params: Record<string, unknown>, fall
   if (!client) return fallbackValue;
 
   try {
+    const isDev = process.env.NODE_ENV === "development";
     const result = await client.fetch<T>(query, params, {
-      next: { tags: [CONTENT_TAG], revalidate: 60 },
+      next: { 
+        tags: [CONTENT_TAG], 
+        revalidate: isDev ? 0 : 60 
+      },
     });
     if (result === null || result === undefined) return fallbackValue;
     if (Array.isArray(result) && result.length === 0) return fallbackValue;
@@ -60,6 +64,19 @@ export function getTestimonials(): Promise<CmsTestimonial[]> {
 
 export function getServices(): Promise<CmsService[]> {
   return safeFetch(q.allServicesQuery, {}, fallback.FALLBACK_SERVICES);
+}
+
+export async function getServiceBySlug(slug: string): Promise<CmsService | null> {
+  const localMatch = fallback.FALLBACK_SERVICES.find((s) => s.slug === slug) ?? null;
+  return safeFetch(q.serviceBySlugQuery, { slug }, localMatch);
+}
+
+export function getServiceSlugs(): Promise<string[]> {
+  return safeFetch(
+    q.allServiceSlugsQuery,
+    {},
+    fallback.FALLBACK_SERVICES.map((s) => s.slug)
+  );
 }
 
 export function getSiteSettings(): Promise<CmsSiteSettings> {

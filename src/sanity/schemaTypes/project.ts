@@ -31,6 +31,7 @@ export default defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({ name: "area", title: "Built-up area", type: "string" }),
+    defineField({ name: "year", title: "Year", type: "string" }),
     defineField({
       name: "location",
       title: "Location",
@@ -58,10 +59,29 @@ export default defineType({
       title: "Category",
       type: "string",
       options: {
-        list: ["Architecture", "Interior", "Construction"],
+        list: [
+          { title: "Architecture", value: "Architecture" },
+          { title: "Interior Design", value: "Interior Design" },
+          { title: "Interior Contracting", value: "Interior Contracting" },
+          { title: "Building Construction", value: "Building Construction" }
+        ],
         layout: "radio",
       },
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "services",
+      title: "Services",
+      description: "Link this project to one or more services.",
+      type: "array",
+      of: [{ type: "reference", to: [{ type: "service" }] }],
+    }),
+    defineField({
+      name: "features",
+      title: "Key features",
+      description: "Bulleted list of key design or build features.",
+      type: "array",
+      of: [{ type: "string" }],
     }),
     defineField({
       name: "cardMeta",
@@ -127,6 +147,17 @@ export default defineType({
         "Thumbnail shown before the video is played. Optional for Cloudinary and YouTube links — those auto-generate a first-frame thumbnail if you leave this empty. Upload one here only if you want a specific frame or a Vimeo link.",
       type: "image",
       options: { hotspot: true },
+    }),
+    defineField({
+      name: "seo",
+      title: "SEO Settings",
+      type: "seo",
+    }),
+    defineField({
+      name: "published",
+      title: "Published",
+      type: "boolean",
+      initialValue: true,
     }),
   ],
   orderings: [

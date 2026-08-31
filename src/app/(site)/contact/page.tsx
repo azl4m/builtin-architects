@@ -4,12 +4,24 @@ import ContactForm from "@/components/ContactForm";
 import Reveal from "@/components/Reveal";
 import { getContactPage, getSiteSettings } from "@/sanity/lib/fetchers";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description:
-    "Tell us about your project — reach BUILTIN Developers & Interiors in Calicut, Kerala and our team will get back within one business day.",
-  alternates: { canonical: "/contact" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const contact = await getContactPage();
+  const seoTitle = contact.seo?.metaTitle || "Contact Us | BUILTIN Developers & Interiors";
+  const seoDesc = contact.seo?.metaDescription || "Tell us about your project — reach BUILTIN Developers & Interiors in Calicut, Kerala and our team will get back within one business day.";
+  const canonical = contact.seo?.canonicalUrl || "/contact";
+
+  return {
+    title: seoTitle,
+    description: seoDesc,
+    alternates: { canonical },
+    openGraph: {
+      title: contact.seo?.ogTitle || seoTitle,
+      description: contact.seo?.ogDescription || seoDesc,
+      images: contact.seo?.ogImage ? [{ url: contact.seo.ogImage.asset?.url || "" }] : [],
+    },
+    robots: contact.seo?.noIndex ? { index: false, follow: true } : undefined,
+  };
+}
 
 export default async function ContactPage() {
   const [contact, siteSettings] = await Promise.all([getContactPage(), getSiteSettings()]);

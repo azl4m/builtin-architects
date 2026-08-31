@@ -12,7 +12,12 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
 
   return (
     <div className="flex min-h-screen flex-col bg-ivory font-sans text-ink">
-      <Header siteName={siteSettings.siteName} siteNameSub={siteSettings.siteNameSub} logo={siteSettings.logo} />
+      <Header
+        siteName={siteSettings.siteName}
+        siteNameSub={siteSettings.siteNameSub}
+        logo={siteSettings.logo}
+        services={services}
+      />
       <main className="flex-1">{children}</main>
       <CTABand eyebrow={ctaBand.eyebrow} heading={ctaBand.heading} buttonLabel={ctaBand.buttonLabel} />
       <Footer
