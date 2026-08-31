@@ -22,6 +22,7 @@ export interface CmsProject {
   cardMeta: string[];
   featured: boolean;
   heroImage: SanityImageValue | null;
+  beforeImage: SanityImageValue | null;
   tagline: string;
   desc1: string;
   desc2: string;
@@ -37,11 +38,22 @@ export interface CmsTestimonial {
   role: string;
 }
 
+export type ServiceIconKey =
+  | "compass"
+  | "pencil-ruler"
+  | "sofa"
+  | "palette"
+  | "hammer"
+  | "wrench"
+  | "hard-hat"
+  | "building";
+
 export interface CmsService {
   _id: string;
   order: number;
   numberLabel: string;
   title: string;
+  icon: ServiceIconKey;
   shortDescription: string;
   fullDescription: string;
   statCaption: string;
@@ -61,6 +73,7 @@ export interface ProcessStep {
 }
 
 export interface CmsSiteSettings {
+  logo: SanityImageValue | null;
   siteName: string;
   siteNameSub: string;
   tagline: string;
@@ -80,11 +93,17 @@ export interface CmsCtaBand {
   buttonLabel: string;
 }
 
+export interface CmsMuxVideo {
+  playbackId: string;
+  status?: string;
+}
+
 export interface CmsHomePage {
   heroEyebrow: string;
   heroHeadline: string;
   heroSubcopy: string;
   heroImage: SanityImageValue | null;
+  heroVideo: CmsMuxVideo | null;
   aboutEyebrow: string;
   aboutHeading: string;
   aboutParagraphs: string[];

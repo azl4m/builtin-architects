@@ -16,12 +16,12 @@ export default function PlaceholderImage({ label, className = "", badge }: Place
       aria-label={label}
       style={{
         backgroundImage:
-          "repeating-linear-gradient(45deg, rgba(169,129,74,0.07) 0px, rgba(169,129,74,0.07) 1px, transparent 1px, transparent 13px), linear-gradient(135deg, #efeae0 0%, #e4ddd0 55%, #efeae0 100%)",
+          "repeating-linear-gradient(45deg, rgba(14,42,70,0.06) 0px, rgba(14,42,70,0.06) 1px, transparent 1px, transparent 13px), linear-gradient(135deg, #f3f5f9 0%, #e2e6ee 55%, #f3f5f9 100%)",
       }}
       className={`relative flex items-center justify-center overflow-hidden ${className}`}
     >
       <div className="flex flex-col items-center gap-3 px-6 text-center">
-        <span className="flex h-11 w-11 items-center justify-center rounded-full border border-accent/35 font-serif text-lg text-accent">
+        <span className="flex h-11 w-11 items-center justify-center rounded-full border border-accent/35 font-display text-lg text-accent">
           B
         </span>
         <span className="font-sans text-[11px] font-semibold tracking-[2px] text-ink/40 uppercase">

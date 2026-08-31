@@ -40,7 +40,7 @@ export default function ProjectsGrid({ featured, rest }: ProjectsGridProps) {
 
       <section className="mx-auto max-w-[1400px] px-16 pt-20 pb-[60px] max-md:px-6 max-md:pt-12">
         {showFeatured ? (
-          <div className="group mb-10 grid grid-cols-[1.3fr_1fr] border border-hairline bg-surface transition-[transform,box-shadow] duration-[350ms] ease-out hover:-translate-y-2 hover:shadow-[0_28px_56px_rgba(32,29,26,0.16)] max-lg:grid-cols-1">
+          <div className="group mb-10 grid grid-cols-[1.3fr_1fr] border border-hairline bg-surface transition-[transform,box-shadow] duration-[350ms] ease-out hover:-translate-y-2 hover:shadow-[0_28px_56px_rgba(16,27,51,0.16)] max-lg:grid-cols-1">
             <div className="relative overflow-hidden">
               <SmartImage
                 image={featured.heroImage}
@@ -48,7 +48,7 @@ export default function ProjectsGrid({ featured, rest }: ProjectsGridProps) {
                 label={featured.cardTitle}
                 className="h-full min-h-[420px] w-full transition-transform duration-[600ms] ease-out group-hover:scale-[1.06]"
               />
-              <div className="absolute top-5 left-5 bg-accent px-4 py-2 text-[11px] font-bold tracking-[1px] text-ink uppercase">
+              <div className="absolute top-5 left-5 bg-accent px-4 py-2 text-[11px] font-bold tracking-[1px] text-white uppercase">
                 {featured.status}
               </div>
             </div>
@@ -56,7 +56,7 @@ export default function ProjectsGrid({ featured, rest }: ProjectsGridProps) {
               <div className="mb-4 text-xs font-bold tracking-[2px] text-accent uppercase">
                 Featured Project
               </div>
-              <h3 className="mb-5 font-serif text-[34px] font-semibold max-md:text-[26px]">
+              <h3 className="mb-5 font-display text-[34px] font-semibold max-md:text-[26px]">
                 {featured.title}
               </h3>
               <div className="text-sm leading-[2.1] text-body">
@@ -79,7 +79,7 @@ export default function ProjectsGrid({ featured, rest }: ProjectsGridProps) {
           {filteredRest.map((project) => (
             <div
               key={project.slug}
-              className="group border border-hairline bg-surface transition-[transform,box-shadow] duration-[350ms] ease-out hover:-translate-y-1.5 hover:shadow-[0_24px_48px_rgba(32,29,26,0.12)]"
+              className="group border border-hairline bg-surface transition-[transform,box-shadow] duration-[350ms] ease-out hover:-translate-y-1.5 hover:shadow-[0_24px_48px_rgba(16,27,51,0.12)]"
             >
               <div className="relative overflow-hidden">
                 <SmartImage
@@ -93,7 +93,7 @@ export default function ProjectsGrid({ featured, rest }: ProjectsGridProps) {
                 </div>
               </div>
               <div className="p-8">
-                <h3 className="mb-3 font-serif text-[23px] font-semibold">{project.cardTitle}</h3>
+                <h3 className="mb-3 font-display text-[23px] font-semibold">{project.cardTitle}</h3>
                 <div className="text-[13.5px] leading-[1.9] text-body">
                   {project.cardMeta.map((line) => (
                     <div key={line}>{line}</div>
@@ -110,7 +110,7 @@ export default function ProjectsGrid({ featured, rest }: ProjectsGridProps) {
           ))}
 
           <div className="flex flex-col items-start justify-center bg-ink p-10 text-ivory">
-            <div className="mb-4 font-serif text-[30px] leading-[1.2] font-semibold">
+            <div className="mb-4 font-display text-[30px] leading-[1.2] font-semibold">
               Have a project in mind?
             </div>
             <p className="mb-6 text-sm leading-[1.7] text-footer-muted">

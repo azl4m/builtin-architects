@@ -14,6 +14,7 @@ const projectFields = /* groq */ `
   "cardMeta": coalesce(cardMeta, []),
   featured,
   heroImage,
+  beforeImage,
   tagline,
   desc1,
   desc2,
@@ -36,14 +37,14 @@ export const allTestimonialsQuery = groq`
 
 export const allServicesQuery = groq`
   *[_type == "service"] | order(order asc) {
-    _id, order, numberLabel, title, shortDescription, fullDescription, statCaption,
+    _id, order, numberLabel, title, icon, shortDescription, fullDescription, statCaption,
     "features": coalesce(features, []),
     image
   }
 `;
 
 export const siteSettingsQuery = groq`*[_type == "siteSettings"][0]{
-  siteName, siteNameSub, tagline, description, footerBlurb,
+  logo, siteName, siteNameSub, tagline, description, footerBlurb,
   contactOffice, contactCity, contactPhone, contactEmail, contactHours,
   "stats": coalesce(stats, [])
 }`;
@@ -52,6 +53,7 @@ export const ctaBandQuery = groq`*[_type == "ctaBand"][0]{ eyebrow, heading, but
 
 export const homePageQuery = groq`*[_type == "homePage"][0]{
   heroEyebrow, heroHeadline, heroSubcopy, heroImage,
+  "heroVideo": heroVideo.asset->{ playbackId, status },
   aboutEyebrow, aboutHeading,
   "aboutParagraphs": coalesce(aboutParagraphs, []),
   aboutImage,

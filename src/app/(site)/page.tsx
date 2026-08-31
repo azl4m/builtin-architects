@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import SmartImage from "@/components/SmartImage";
+import HeroVideo from "@/components/HeroVideo";
+import Reveal from "@/components/Reveal";
+import AnimatedStat from "@/components/AnimatedStat";
+import DimensionLine from "@/components/DimensionLine";
+import FeaturedProjectsShowcase from "@/components/FeaturedProjectsShowcase";
+import { SERVICE_ICONS } from "@/lib/serviceIcons";
 import {
   getHomePage,
   getProjects,
@@ -29,7 +35,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <section className="relative h-[88vh] min-h-[620px] overflow-hidden">
+      <section id="site-hero" className="relative h-dvh min-h-[560px] overflow-hidden">
         <SmartImage
           image={home.heroImage}
           alt={home.heroHeadline}
@@ -37,29 +43,46 @@ export default async function HomePage() {
           className="absolute inset-0 h-full w-full"
           priority
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,18,16,0.35)_0%,rgba(20,18,16,0.55)_100%)]" />
-        <div className="relative z-[2] flex h-full max-w-[900px] flex-col justify-center px-16 max-md:px-6">
-          <div className="mb-5 text-[13px] font-semibold tracking-[4px] text-accent uppercase">
+        {home.heroVideo?.playbackId && home.heroVideo.status === "ready" ? (
+          <HeroVideo playbackId={home.heroVideo.playbackId} className="absolute inset-0 h-full w-full" />
+        ) : null}
+        <div className="hero-overlay absolute inset-0" />
+        <div className="relative z-[2] flex h-full max-w-[900px] flex-col justify-end px-16 pb-20 max-md:px-6 max-md:pb-10">
+          <Reveal
+            as="div"
+            delay={0}
+            className="mb-5 text-[13px] font-semibold tracking-[4px] text-accent-light uppercase max-md:mb-3 max-md:text-[11px] max-md:tracking-[2px]"
+          >
             {home.heroEyebrow}
-          </div>
-          <h1 className="mb-7 text-pretty font-serif text-[76px] leading-[1.05] font-semibold text-ivory max-lg:text-[56px] max-md:text-[42px]">
+          </Reveal>
+          <Reveal
+            as="h1"
+            delay={0.09}
+            className="mb-7 text-pretty font-display text-[76px] leading-[1.05] font-semibold text-ivory max-lg:text-[56px] max-md:mb-3 max-md:text-[32px] max-md:leading-[1.15]"
+          >
             {home.heroHeadline}
-          </h1>
-          <p className="mb-10 max-w-[560px] text-lg leading-[1.6] text-[#e7e1d6]">{home.heroSubcopy}</p>
-          <div className="flex flex-wrap gap-5">
+          </Reveal>
+          <Reveal
+            as="p"
+            delay={0.18}
+            className="mb-10 max-w-[560px] text-lg leading-[1.6] text-[#dce3f2] max-md:mb-6 max-md:text-[14px] max-md:leading-[1.5]"
+          >
+            {home.heroSubcopy}
+          </Reveal>
+          <Reveal as="div" delay={0.27} className="flex flex-wrap gap-5 max-md:gap-3">
             <Link
               href="/projects"
-              className="rounded-[2px] bg-accent px-[34px] py-4 text-sm font-bold tracking-[1px] text-ink uppercase transition-colors hover:bg-accent-hover"
+              className="rounded-[2px] bg-ivory px-[34px] py-4 text-sm font-bold tracking-[1px] text-ink uppercase transition-colors hover:bg-accent-light hover:text-ivory max-md:px-6 max-md:py-3 max-md:text-xs"
             >
               View Projects
             </Link>
             <Link
               href="/contact"
-              className="rounded-[2px] border border-ivory px-[34px] py-4 text-sm font-bold tracking-[1px] text-ivory uppercase transition-colors hover:border-accent hover:text-accent"
+              className="rounded-[2px] border border-ivory px-[34px] py-4 text-sm font-bold tracking-[1px] text-ivory uppercase transition-colors hover:border-accent-light hover:text-accent-light max-md:px-6 max-md:py-3 max-md:text-xs"
             >
               Get In Touch
             </Link>
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -74,7 +97,7 @@ export default async function HomePage() {
           <div className="mb-[18px] text-[13px] font-semibold tracking-[4px] text-accent uppercase">
             {home.aboutEyebrow}
           </div>
-          <h2 className="mb-7 font-serif text-[44px] leading-[1.15] font-semibold max-md:text-[32px]">
+          <h2 className="mb-7 font-display text-[44px] leading-[1.15] font-semibold max-md:text-[32px]">
             {home.aboutHeading}
           </h2>
           {home.aboutParagraphs.map((paragraph, i) => (
@@ -96,10 +119,10 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="grid grid-cols-4 gap-10 bg-ink px-16 py-20 text-center text-ivory max-lg:grid-cols-2 max-lg:gap-8 max-md:px-6">
+      <section className="blueprint-grid grid grid-cols-4 gap-10 bg-ink px-16 py-20 text-center text-ivory max-lg:grid-cols-2 max-lg:gap-8 max-md:px-6">
         {siteSettings.stats.map((stat) => (
           <div key={stat.label}>
-            <div className="font-serif text-[56px] text-accent">{stat.value}</div>
+            <AnimatedStat value={stat.value} className="font-display text-[56px] text-ivory" />
             <div className="mt-2 text-[13px] tracking-[2px] text-footer-muted uppercase">
               {stat.label}
             </div>
@@ -109,21 +132,37 @@ export default async function HomePage() {
 
       <section className="mx-auto max-w-[1400px] px-16 py-[140px] max-md:px-6 max-md:py-20">
         <div className="mb-[70px] text-center">
-          <div className="mb-[18px] text-[13px] font-semibold tracking-[4px] text-accent uppercase">
+          <div className="mb-[18px] flex items-center justify-center gap-4 text-[13px] font-semibold tracking-[4px] text-accent uppercase">
+            <DimensionLine className="text-accent" width={56} />
             {home.servicesEyebrow}
+            <DimensionLine className="text-accent" width={56} />
           </div>
-          <h2 className="font-serif text-[44px] font-semibold max-md:text-[32px]">
+          <h2 className="font-display text-[44px] font-semibold max-md:text-[32px]">
             {home.servicesHeading}
           </h2>
         </div>
-        <div className="grid grid-cols-3 gap-10 max-lg:grid-cols-1">
-          {services.map((s) => (
-            <div key={s._id} className="border border-hairline bg-surface px-9 py-12">
-              <div className="mb-4 font-serif text-[15px] text-accent">{s.numberLabel}</div>
-              <h3 className="mb-4 font-serif text-[26px] font-semibold">{s.title}</h3>
-              <p className="text-[15px] leading-[1.8] text-body">{s.shortDescription}</p>
-            </div>
-          ))}
+        <div className="grid grid-cols-4 gap-8 max-lg:grid-cols-2 max-md:grid-cols-1">
+          {services.map((s, i) => {
+            const Icon = SERVICE_ICONS[s.icon];
+            return (
+              <Reveal
+                key={s._id}
+                as="div"
+                direction="up"
+                delay={i * 0.1}
+                viewTriggered
+                hoverLift
+                className="border border-hairline bg-surface px-7 py-10"
+              >
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-alt text-accent">
+                  <Icon className="h-5 w-5" strokeWidth={1.75} />
+                </div>
+                <div className="mb-3 font-display text-[13px] text-accent">{s.numberLabel}</div>
+                <h3 className="mb-3 font-display text-[21px] font-semibold">{s.title}</h3>
+                <p className="text-[14px] leading-[1.75] text-body">{s.shortDescription}</p>
+              </Reveal>
+            );
+          })}
         </div>
         <div className="mt-14 text-center">
           <Link
@@ -135,39 +174,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-alt px-16 py-[140px] max-md:px-6 max-md:py-20">
-        <div className="mx-auto max-w-[1400px]">
-          <div className="mb-14 flex flex-wrap items-end justify-between gap-6">
-            <div>
-              <div className="mb-[18px] text-[13px] font-semibold tracking-[4px] text-accent uppercase">
-                {home.featuredProjectsEyebrow}
-              </div>
-              <h2 className="font-serif text-[44px] font-semibold max-md:text-[32px]">
-                {home.featuredProjectsHeading}
-              </h2>
-            </div>
-            <Link
-              href="/projects"
-              className="border-b-2 border-accent pb-1 text-sm font-bold tracking-[1px] text-ink uppercase"
-            >
-              All Projects →
-            </Link>
-          </div>
-          <div className="grid grid-cols-4 gap-7 max-lg:grid-cols-2 max-sm:grid-cols-1">
-            {featuredHome.map((project) => (
-              <Link key={project._id} href="/projects" className="block text-ink no-underline">
-                <SmartImage
-                  image={project.heroImage}
-                  alt={project.cardTitle}
-                  label={project.cardTitle}
-                  className="mb-[18px] h-[280px] w-full rounded-[2px]"
-                />
-                <div className="mb-1 font-serif text-xl font-semibold">{project.cardTitle}</div>
-                <div className="text-[13px] text-muted">{project.cardMeta[0]}</div>
-              </Link>
-            ))}
-          </div>
-        </div>
+      <section className="bg-alt">
+        <FeaturedProjectsShowcase
+          eyebrow={home.featuredProjectsEyebrow}
+          heading={home.featuredProjectsHeading}
+          projects={featuredHome}
+        />
       </section>
 
       <section className="mx-auto max-w-[1200px] px-16 py-[140px] max-md:px-6 max-md:py-20">
@@ -175,14 +187,14 @@ export default async function HomePage() {
           <div className="mb-[18px] text-[13px] font-semibold tracking-[4px] text-accent uppercase">
             {home.testimonialsEyebrow}
           </div>
-          <h2 className="font-serif text-[44px] font-semibold max-md:text-[32px]">
+          <h2 className="font-display text-[44px] font-semibold max-md:text-[32px]">
             {home.testimonialsHeading}
           </h2>
         </div>
         <div className="grid grid-cols-3 gap-9 max-lg:grid-cols-1">
           {testimonials.map((t) => (
             <div key={t._id} className="border border-hairline bg-surface px-8 py-10">
-              <p className="mb-7 font-serif text-[19px] leading-[1.7] text-copy-dark italic">
+              <p className="mb-7 font-display text-[19px] leading-[1.7] text-copy-dark italic">
                 &ldquo;{t.quote}&rdquo;
               </p>
               <div className="text-sm font-bold">{t.name}</div>

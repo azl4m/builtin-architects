@@ -21,6 +21,7 @@ import type {
  */
 
 export const FALLBACK_SITE_SETTINGS: CmsSiteSettings = {
+  logo: null,
   siteName: "BUILTIN",
   siteNameSub: "Developers & Interiors",
   tagline: "Build your dreams with us.",
@@ -75,7 +76,8 @@ export const FALLBACK_SERVICES: CmsService[] = [
     _id: "fallback-service-1",
     order: 1,
     numberLabel: "01",
-    title: "Architecture",
+    title: "Architectural Services",
+    icon: "pencil-ruler",
     shortDescription:
       "Concept design, planning approvals, and detailed drawings that balance light, space, and function.",
     fullDescription:
@@ -93,7 +95,8 @@ export const FALLBACK_SERVICES: CmsService[] = [
     _id: "fallback-service-2",
     order: 2,
     numberLabel: "02",
-    title: "Interior",
+    title: "Interior Design",
+    icon: "sofa",
     shortDescription:
       "Bespoke interiors and styling — from material palettes to custom furniture and lighting.",
     fullDescription:
@@ -111,7 +114,26 @@ export const FALLBACK_SERVICES: CmsService[] = [
     _id: "fallback-service-3",
     order: 3,
     numberLabel: "03",
-    title: "Construction",
+    title: "Interior Contracting",
+    icon: "hammer",
+    shortDescription: "Turning approved interior designs into finished spaces — on-site, on schedule.",
+    fullDescription:
+      "Our contracting teams execute the interior design intent directly — carpentry, false ceilings, electrical and finishing work — with one point of accountability from drawing to handover.",
+    statCaption: "Design executed on site",
+    features: [
+      "Carpentry & custom joinery",
+      "False ceiling & electrical fit-out",
+      "Painting & finishing work",
+      "Single point of site accountability",
+    ],
+    image: null,
+  },
+  {
+    _id: "fallback-service-4",
+    order: 4,
+    numberLabel: "04",
+    title: "Building Construction",
+    icon: "hard-hat",
     shortDescription: "End-to-end build execution with dedicated site management and quality control.",
     fullDescription:
       "Our site teams carry the design intent through to execution — with dedicated supervision, quality checks, and a schedule you can actually plan around.",
@@ -132,6 +154,7 @@ export const FALLBACK_HOME_PAGE: CmsHomePage = {
   heroSubcopy:
     "From first sketch to final handover — BUILTIN Developers & Interiors delivers thoughtful design and reliable execution across every stage of your build.",
   heroImage: null,
+  heroVideo: null,
   aboutEyebrow: "At BUILTIN",
   aboutHeading: "Excellence, built into every foundation",
   aboutParagraphs: [
@@ -232,6 +255,7 @@ export const FALLBACK_PROJECTS: CmsProject[] = PROJECTS.map((p) => ({
   cardMeta: p.cardMeta,
   featured: p.slug === FEATURED_PROJECT_SLUG,
   heroImage: null,
+  beforeImage: null,
   tagline: p.tagline,
   desc1: p.desc1,
   desc2: p.desc2,

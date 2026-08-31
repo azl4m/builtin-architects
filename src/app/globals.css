@@ -1,36 +1,66 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-serif: var(--font-cormorant), serif;
+  --font-display: var(--font-sora), sans-serif;
   --font-sans: var(--font-manrope), sans-serif;
 
-  --color-ivory: #f6f3ee;
-  --color-alt: #efeae0;
+  --color-ivory: #ffffff;
+  --color-alt: #f3f5f9;
   --color-surface: #ffffff;
-  --color-ink: #201d1a;
-  --color-footer: #1a1815;
-  --color-body: #4a453d;
-  --color-muted: #6b6459;
-  --color-hairline: #e4ddd0;
-  --color-hairline-alt: #ddd3bf;
-  --color-hairline-dark: #33302a;
-  --color-accent: #a9814a;
-  --color-accent-hover: #8c6a35;
-  --color-accent-light: #c9a55f;
-  --color-footer-muted: #c8c1b3;
-  --color-copy-dark: #2b2822;
+  --color-ink: #0e2a46;
+  --color-footer: #081c30;
+  --color-body: #46536b;
+  --color-muted: #7c8699;
+  --color-hairline: #e2e6ee;
+  --color-hairline-alt: #d3d9e3;
+  --color-hairline-dark: #1f3a58;
+  --color-accent: #2f6690;
+  --color-accent-hover: #123655;
+  --color-accent-light: #6fa3c7;
+  --color-footer-muted: #93a1b8;
+  --color-copy-dark: #12233a;
 }
 
-body {
-  background: var(--color-ivory);
-  color: var(--color-ink);
+@layer base {
+  body {
+    background: var(--color-ivory);
+    color: var(--color-ink);
+  }
+
+  a {
+    color: inherit;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: #ffffff;
+  }
 }
 
-a {
-  color: inherit;
+/*
+ * Shared hero overlay: darkens the very top (keeps the floating transparent
+ * nav readable) and the bottom (keeps bottom-left hero copy readable) while
+ * staying clear through the middle so the uploaded photo/video still reads —
+ * regardless of how bright or dark that media is.
+ */
+.hero-overlay {
+  background-image: linear-gradient(
+    180deg,
+    rgba(10, 20, 40, 0.65) 0%,
+    rgba(10, 20, 40, 0.15) 20%,
+    rgba(10, 20, 40, 0.2) 55%,
+    rgba(10, 20, 40, 0.8) 100%
+  );
 }
 
-::selection {
-  background: var(--color-accent);
-  color: var(--color-ink);
+/*
+ * Blueprint/drafting motif: a faint technical-drawing grid, used on dark
+ * navy sections in place of a flat color fill — ties the visual language to
+ * architecture instead of generic corporate-dark.
+ */
+.blueprint-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
 }

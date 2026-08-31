@@ -5,7 +5,7 @@ import { useState, type FormEvent } from "react";
 type Status = "idle" | "submitting" | "success" | "error";
 
 const fieldClass =
-  "field w-full border border-[#d9d1c1] bg-surface px-4 py-3.5 font-sans text-[15px] text-ink placeholder:text-[#9b9384] focus:outline-2 focus:outline-accent";
+  "field w-full border border-hairline-alt bg-surface px-4 py-3.5 font-sans text-[15px] text-ink placeholder:text-muted focus:outline-2 focus:outline-accent";
 
 export default function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
@@ -44,7 +44,7 @@ export default function ContactForm() {
   if (status === "success") {
     return (
       <div className="flex flex-col items-start justify-center border border-hairline bg-surface p-12 text-center max-md:p-8">
-        <h3 className="mb-3 font-serif text-2xl font-semibold">Thank you.</h3>
+        <h3 className="mb-3 font-display text-2xl font-semibold">Thank you.</h3>
         <p className="mb-6 text-[15px] leading-[1.8] text-body">
           Your enquiry has been sent. Our team will get back to you within one business day.
         </p>
@@ -103,12 +103,12 @@ export default function ContactForm() {
         minLength={10}
       />
 
-      {error ? <p className="mb-5 text-sm text-[#b3432f]">{error}</p> : null}
+      {error ? <p className="mb-5 text-sm text-[#e5484d]">{error}</p> : null}
 
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="rounded-[2px] bg-accent px-10 py-4 font-sans text-sm font-bold tracking-[1px] text-ink uppercase transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
+        className="rounded-[2px] bg-ink px-10 py-4 font-sans text-sm font-bold tracking-[1px] text-ivory uppercase transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-60"
       >
         {status === "submitting" ? "Sending…" : "Send Enquiry"}
       </button>

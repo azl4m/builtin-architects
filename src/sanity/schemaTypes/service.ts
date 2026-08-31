@@ -7,9 +7,29 @@ export default defineType({
   fields: [
     defineField({
       name: "order",
-      title: "Order (1–3)",
+      title: "Order",
       type: "number",
       validation: (rule) => rule.required().min(1),
+    }),
+    defineField({
+      name: "icon",
+      title: "Icon",
+      description: "Shown on the Home page services cards.",
+      type: "string",
+      options: {
+        list: [
+          { title: "Architecture (compass)", value: "compass" },
+          { title: "Architecture (drafting)", value: "pencil-ruler" },
+          { title: "Interior design (sofa)", value: "sofa" },
+          { title: "Interior design (palette)", value: "palette" },
+          { title: "Contracting (hammer)", value: "hammer" },
+          { title: "Contracting (wrench)", value: "wrench" },
+          { title: "Construction (hard hat)", value: "hard-hat" },
+          { title: "Construction (building)", value: "building" },
+        ],
+        layout: "dropdown",
+      },
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: "numberLabel",

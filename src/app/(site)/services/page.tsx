@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import SmartImage from "@/components/SmartImage";
+import Reveal from "@/components/Reveal";
 import { getServices, getServicesPage } from "@/sanity/lib/fetchers";
 
 export const metadata: Metadata = {
@@ -17,14 +18,14 @@ function FeatureRow({ children }: { children: React.ReactNode }) {
   );
 }
 
-const GHOST_COLORS = ["#e9ddc4", "#ddd0b2", "#e9ddc4"];
+const GHOST_COLORS = ["#dce3f2", "#c9d3ea", "#dce3f2"];
 
 export default async function ServicesPage() {
   const [servicesPage, services] = await Promise.all([getServicesPage(), getServices()]);
 
   return (
     <>
-      <section className="relative h-[56vh] min-h-[420px] overflow-hidden">
+      <section id="site-hero" className="relative h-[56vh] min-h-[420px] overflow-hidden">
         <SmartImage
           image={servicesPage.heroImage}
           alt={servicesPage.heroHeading}
@@ -32,26 +33,40 @@ export default async function ServicesPage() {
           className="absolute inset-0 h-full w-full"
           priority
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,18,16,0.25)_0%,rgba(20,18,16,0.65)_100%)]" />
-        <div className="relative z-[2] flex h-full max-w-[820px] flex-col justify-center px-16 max-md:px-6">
-          <div className="mb-4 text-[13px] font-semibold tracking-[4px] text-accent-light uppercase">
+        <div className="hero-overlay absolute inset-0" />
+        <div className="relative z-[2] flex h-full max-w-[820px] flex-col justify-end px-16 pb-14 max-md:px-6 max-md:pb-8">
+          <Reveal
+            as="div"
+            delay={0}
+            className="mb-4 text-[13px] font-semibold tracking-[4px] text-accent-light uppercase max-md:mb-2 max-md:text-[11px] max-md:tracking-[2px]"
+          >
             {servicesPage.heroEyebrow}
-          </div>
-          <h1 className="mb-5 font-serif text-[64px] leading-[1.05] font-semibold text-ivory max-lg:text-[48px] max-md:text-[36px]">
+          </Reveal>
+          <Reveal
+            as="h1"
+            delay={0.09}
+            className="mb-5 font-display text-[64px] leading-[1.05] font-semibold text-ivory max-lg:text-[48px] max-md:mb-2 max-md:text-[26px] max-md:leading-[1.2]"
+          >
             {servicesPage.heroHeading}
-          </h1>
-          <p className="text-[17px] leading-[1.7] text-[#e7e1d6]">{servicesPage.heroSubcopy}</p>
+          </Reveal>
+          <Reveal
+            as="p"
+            delay={0.18}
+            className="text-[17px] leading-[1.7] text-[#dce3f2] max-md:text-[13px] max-md:leading-[1.5]"
+          >
+            {servicesPage.heroSubcopy}
+          </Reveal>
         </div>
       </section>
 
-      <section className="relative z-[3] mx-auto -mt-16 max-w-[1400px] px-16 max-md:px-6">
-        <div className="grid grid-cols-3 gap-10 bg-ink px-14 py-12 text-ivory shadow-[0_30px_60px_rgba(20,18,16,0.25)] max-md:grid-cols-1 max-md:gap-8 max-md:px-8 max-md:py-8">
+      <section className="relative z-[3] mx-auto -mt-16 max-w-[1400px] px-16 max-md:mt-0 max-md:px-6">
+        <div className="grid grid-cols-3 gap-10 bg-ink px-14 py-12 text-ivory shadow-[0_30px_60px_rgba(10,20,40,0.25)] max-md:grid-cols-1 max-md:gap-8 max-md:px-8 max-md:py-8">
           {services.map((s, i) => (
             <div
               key={s._id}
-              className={i < services.length - 1 ? "border-r border-[#3a362f] pr-10 max-md:border-r-0 max-md:pr-0" : ""}
+              className={i < services.length - 1 ? "border-r border-hairline-dark pr-10 max-md:border-r-0 max-md:pr-0" : ""}
             >
-              <div className="mb-1.5 font-serif text-[34px] text-accent-light">
+              <div className="mb-1.5 font-display text-[34px] text-accent-light">
                 {s.numberLabel} — {s.title}
               </div>
               <div className="text-sm leading-[1.6] text-footer-muted">{s.statCaption}</div>
@@ -76,12 +91,12 @@ export default async function ServicesPage() {
             <div className="mx-auto grid max-w-[1400px] grid-cols-2 items-center gap-20 max-lg:grid-cols-1 max-lg:gap-12">
               <div className={imageFirst ? "order-2" : ""}>
                 <div
-                  className="-mb-7 font-serif text-[96px] leading-none font-semibold max-md:text-6xl"
+                  className="-mb-7 font-display text-[96px] leading-none font-semibold max-md:text-6xl"
                   style={{ color: GHOST_COLORS[i % GHOST_COLORS.length] }}
                 >
                   {service.numberLabel}
                 </div>
-                <h2 className="mb-6 font-serif text-[42px] font-semibold max-md:text-[30px]">
+                <h2 className="mb-6 font-display text-[42px] font-semibold max-md:text-[30px]">
                   {service.title}
                 </h2>
                 <p className="mb-7 text-base leading-[1.85] text-body">{service.fullDescription}</p>

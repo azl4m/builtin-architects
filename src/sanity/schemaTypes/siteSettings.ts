@@ -5,6 +5,12 @@ export default defineType({
   title: "Site Settings",
   type: "document",
   fields: [
+    defineField({
+      name: "logo",
+      title: "Logo",
+      description: "Used in the header and footer nav. Leave empty to keep the default mark.",
+      type: "image",
+    }),
     defineField({ name: "siteName", title: "Site name", type: "string", initialValue: "BUILTIN" }),
     defineField({
       name: "siteNameSub",

@@ -2,32 +2,85 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NAV_LINKS } from "@/lib/site";
+import SiteLogo from "@/components/SiteLogo";
+import type { SanityImageValue } from "@/sanity/lib/types";
 
 interface HeaderProps {
   siteName: string;
   siteNameSub: string;
+  logo?: SanityImageValue | null;
 }
 
-export default function Header({ siteName, siteNameSub }: HeaderProps) {
+// Routes that open with a full-bleed hero image/video at the very top —
+// only these get the transparent-over-hero treatment. Anything else (e.g.
+// a 404) keeps the solid header from the start so nav text stays legible.
+const HERO_ROUTES = ["/", "/about", "/services", "/projects", "/contact"];
+
+export default function Header({ siteName, siteNameSub, logo }: HeaderProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Tracks whether the hero has scrolled out from behind the header — not a
+  // fixed scroll distance, since hero height varies a lot per page (a full
+  // viewport on Home vs. a short banner on Contact). Without its own
+  // background, the logo needs to know exactly when it stops sitting on the
+  // hero photo so its light/dark color swap stays correct everywhere.
+  useEffect(() => {
+    const hero = document.getElementById("site-hero");
+    if (!hero) {
+      setScrolled(true);
+      return;
+    }
+
+    setScrolled(false);
+    const observer = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting), {
+      rootMargin: "-90px 0px 0px 0px",
+      threshold: 0,
+    });
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, [pathname]);
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname?.startsWith(href));
 
+  const hasHeroAtTop =
+    pathname === "/" || HERO_ROUTES.includes(pathname ?? "") || Boolean(pathname?.startsWith("/projects/"));
+  const transparent = hasHeroAtTop && !scrolled;
+
   return (
-    <header className="sticky top-0 z-50 border-b border-hairline bg-ivory/92 backdrop-blur-sm">
+    <header className="fixed top-0 inset-x-0 z-50">
       <div className="flex items-center justify-between px-16 py-5 max-lg:px-6 max-lg:py-4">
-        <Link href="/" className="no-underline text-ink" onClick={() => setOpen(false)}>
-          <div className="font-serif text-[26px] font-semibold tracking-[2px]">{siteName}</div>
-          <div className="mt-0.5 text-[10px] tracking-[3px] text-accent uppercase">{siteNameSub}</div>
+        <Link
+          href="/"
+          className={`flex items-center gap-3 no-underline transition-colors duration-300 ${
+            transparent ? "text-ivory" : "text-ink"
+          }`}
+          onClick={() => setOpen(false)}
+        >
+          <span className="shrink-0 overflow-hidden max-lg:rounded-full">
+            <SiteLogo logo={logo} alt={siteName} size={38} />
+          </span>
+          <div className="min-w-0 max-md:hidden">
+            <div className="font-display text-[24px] leading-tight font-bold tracking-[1px]">{siteName}</div>
+            <div
+              className={`mt-0.5 text-[10px] tracking-[3px] uppercase transition-colors duration-300 ${
+                transparent ? "text-accent-light" : "text-accent"
+              }`}
+            >
+              {siteNameSub}
+            </div>
+          </div>
         </Link>
 
-        <nav className="flex items-center gap-10 max-lg:hidden">
+        <nav className="flex items-center gap-0.5 rounded-full bg-ink/90 p-1.5 backdrop-blur-md max-lg:hidden">
           <Link
             href="/"
-            className={`text-sm transition-colors hover:text-accent ${isActive("/") ? "text-accent" : "text-ink"}`}
+            className={`rounded-full px-4 py-2 text-sm transition-colors ${
+              isActive("/") ? "bg-ivory/15 text-ivory" : "text-ivory/75 hover:text-ivory"
+            }`}
           >
             Home
           </Link>
@@ -35,8 +88,8 @@ export default function Header({ siteName, siteNameSub }: HeaderProps) {
             <Link
               key={link.href}
               href={link.href}
-              className={`text-sm transition-colors hover:text-accent ${
-                isActive(link.href) ? "text-accent" : "text-ink"
+              className={`rounded-full px-4 py-2 text-sm transition-colors ${
+                isActive(link.href) ? "bg-ivory/15 text-ivory" : "text-ivory/75 hover:text-ivory"
               }`}
             >
               {link.label}
@@ -44,47 +97,65 @@ export default function Header({ siteName, siteNameSub }: HeaderProps) {
           ))}
           <Link
             href="/contact"
-            className={`rounded-[2px] border px-[22px] py-2.5 text-sm transition-colors hover:text-accent ${
-              isActive("/contact") ? "border-accent text-accent" : "border-ink text-ink"
+            className={`ml-1 rounded-full px-5 py-2 text-sm font-bold transition-colors ${
+              isActive("/contact") ? "bg-accent-light text-ivory" : "bg-ivory text-ink hover:bg-accent-light hover:text-ivory"
             }`}
           >
             Contact
           </Link>
         </nav>
 
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          className="hidden flex-col gap-[5px] p-2 max-lg:flex"
-        >
-          <span className={`h-[1.5px] w-6 bg-ink transition-transform ${open ? "translate-y-[6.5px] rotate-45" : ""}`} />
-          <span className={`h-[1.5px] w-6 bg-ink transition-opacity ${open ? "opacity-0" : ""}`} />
-          <span className={`h-[1.5px] w-6 bg-ink transition-transform ${open ? "-translate-y-[6.5px] -rotate-45" : ""}`} />
-        </button>
-      </div>
-
-      {open ? (
-        <nav className="hidden flex-col gap-1 border-t border-hairline px-6 pt-4 pb-6 max-lg:flex">
-          {[{ href: "/", label: "Home" }, ...NAV_LINKS].map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setOpen(false)}
-              className={`py-3 text-base ${isActive(link.href) ? "text-accent" : "text-ink"}`}
-            >
-              {link.label}
-            </Link>
-          ))}
+        <div className="hidden items-center gap-1 rounded-full bg-ink/90 p-1.5 backdrop-blur-md max-lg:flex">
           <Link
             href="/contact"
-            onClick={() => setOpen(false)}
-            className="mt-2 inline-block w-fit rounded-[2px] border border-ink px-[22px] py-2.5 text-sm text-ink"
+            className={`rounded-full px-4 py-2 text-sm font-bold transition-colors ${
+              isActive("/contact") ? "bg-accent-light text-ivory" : "bg-ivory text-ink"
+            }`}
           >
             Contact
           </Link>
-        </nav>
+
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            className="flex flex-col gap-[5px] rounded-full p-2.5"
+          >
+            <span
+              className={`h-[1.5px] w-5 bg-ivory transition-transform duration-300 ${
+                open ? "translate-y-[6.5px] rotate-45" : ""
+              }`}
+            />
+            <span
+              className={`h-[1.5px] w-5 bg-ivory transition-opacity duration-300 ${open ? "opacity-0" : ""}`}
+            />
+            <span
+              className={`h-[1.5px] w-5 bg-ivory transition-transform duration-300 ${
+                open ? "-translate-y-[6.5px] -rotate-45" : ""
+              }`}
+            />
+          </button>
+        </div>
+      </div>
+
+      {open ? (
+        <div className="hidden px-6 pb-6 max-lg:block">
+          <nav className="flex flex-col gap-1 rounded-2xl bg-ink/95 p-2 backdrop-blur-md">
+            {[{ href: "/", label: "Home" }, ...NAV_LINKS].map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className={`rounded-xl px-4 py-3 text-base transition-colors ${
+                  isActive(link.href) ? "bg-ivory/15 text-ivory" : "text-ivory/80 hover:text-ivory"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
       ) : null}
     </header>
   );

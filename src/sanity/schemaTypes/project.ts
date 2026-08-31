@@ -89,6 +89,14 @@ export default defineType({
       options: { hotspot: true },
     }),
     defineField({
+      name: "beforeImage",
+      title: "Before photo (optional)",
+      description:
+        "The empty site/plot before construction, shot from roughly the same angle as the hero image. Powers the before/after slider on this project's page — leave empty to skip that section entirely.",
+      type: "image",
+      options: { hotspot: true },
+    }),
+    defineField({
       name: "tagline",
       title: "Overview tagline",
       description: "Short heading shown above the two description paragraphs on the project detail page.",

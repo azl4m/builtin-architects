@@ -14,6 +14,13 @@ export default defineType({
     defineField({ name: "heroHeadline", title: "Hero headline", type: "string" }),
     defineField({ name: "heroSubcopy", title: "Hero subcopy", type: "text", rows: 3 }),
     defineField({ name: "heroImage", title: "Hero image", type: "image", options: { hotspot: true } }),
+    defineField({
+      name: "heroVideo",
+      title: "Hero video (optional)",
+      description:
+        "Uploads and streams through Mux. When set, this autoplays (muted, looped) behind the hero text instead of the hero image. Leave empty to keep using the hero image.",
+      type: "mux.video",
+    }),
 
     defineField({ name: "aboutEyebrow", title: "About excerpt eyebrow", type: "string", initialValue: "At BUILTIN" }),
     defineField({ name: "aboutHeading", title: "About excerpt heading", type: "string" }),

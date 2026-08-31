@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import SmartImage from "@/components/SmartImage";
 import ContactForm from "@/components/ContactForm";
+import Reveal from "@/components/Reveal";
 import { getContactPage, getSiteSettings } from "@/sanity/lib/fetchers";
 
 export const metadata: Metadata = {
@@ -22,7 +23,7 @@ export default async function ContactPage() {
 
   return (
     <>
-      <section className="relative h-[40vh] min-h-[300px] overflow-hidden">
+      <section id="site-hero" className="relative h-[40vh] min-h-[300px] overflow-hidden">
         <SmartImage
           image={contact.heroImage}
           alt={contact.heroHeading}
@@ -30,14 +31,18 @@ export default async function ContactPage() {
           className="absolute inset-0 h-full w-full"
           priority
         />
-        <div className="absolute inset-0 bg-[rgba(20,18,16,0.5)]" />
-        <div className="relative z-[2] flex h-full flex-col justify-center px-16 max-md:px-6">
-          <div className="mb-4 text-[13px] font-semibold tracking-[4px] text-accent-light uppercase">
+        <div className="hero-overlay absolute inset-0" />
+        <div className="relative z-[2] flex h-full flex-col justify-end px-16 pb-14 max-md:px-6 max-md:pb-8">
+          <Reveal
+            as="div"
+            delay={0}
+            className="mb-4 text-[13px] font-semibold tracking-[4px] text-accent-light uppercase max-md:mb-2 max-md:text-[11px] max-md:tracking-[2px]"
+          >
             {contact.heroEyebrow}
-          </div>
-          <h1 className="font-serif text-[56px] font-semibold text-ivory max-md:text-[40px]">
+          </Reveal>
+          <Reveal as="h1" delay={0.09} className="font-display text-[56px] font-semibold text-ivory max-md:text-[30px]">
             {contact.heroHeading}
-          </h1>
+          </Reveal>
         </div>
       </section>
 
@@ -46,7 +51,7 @@ export default async function ContactPage() {
           <div className="mb-[18px] text-[13px] font-semibold tracking-[4px] text-accent uppercase">
             {contact.introEyebrow}
           </div>
-          <h2 className="mb-7 font-serif text-[36px] font-semibold">{contact.introHeading}</h2>
+          <h2 className="mb-7 font-display text-[36px] font-semibold">{contact.introHeading}</h2>
           <p className="mb-10 text-[15px] leading-[1.85] text-body">{contact.introParagraph}</p>
           <div className="flex flex-col gap-7">
             {infoRows.map((row) => (

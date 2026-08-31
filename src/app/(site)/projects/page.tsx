@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import SmartImage from "@/components/SmartImage";
 import ProjectsGrid from "@/components/ProjectsGrid";
+import Reveal from "@/components/Reveal";
 import { getProjects, getProjectsPage } from "@/sanity/lib/fetchers";
 
 export const metadata: Metadata = {
@@ -18,7 +19,7 @@ export default async function ProjectsPage() {
 
   return (
     <>
-      <section className="relative min-h-[420px] overflow-hidden">
+      <section id="site-hero" className="relative min-h-[420px] overflow-hidden">
         <SmartImage
           image={projectsPage.heroImage}
           alt={projectsPage.heroHeading}
@@ -26,17 +27,29 @@ export default async function ProjectsPage() {
           className="absolute inset-0 h-full w-full"
           priority
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,18,16,0.25)_0%,rgba(20,18,16,0.7)_100%)]" />
-        <div className="relative z-[2] flex max-w-[900px] flex-col justify-end px-16 pt-[120px] pb-16 max-md:px-6 max-md:pt-24 max-md:pb-10">
-          <div className="mb-4 text-[13px] font-semibold tracking-[4px] text-accent-light uppercase">
+        <div className="hero-overlay absolute inset-0" />
+        <div className="relative z-[2] flex max-w-[900px] flex-col justify-end px-16 pt-[120px] pb-16 max-md:px-6 max-md:pt-24 max-md:pb-8">
+          <Reveal
+            as="div"
+            delay={0}
+            className="mb-4 text-[13px] font-semibold tracking-[4px] text-accent-light uppercase max-md:mb-2 max-md:text-[11px] max-md:tracking-[2px]"
+          >
             {projectsPage.heroEyebrow}
-          </div>
-          <h1 className="mb-4 font-serif text-[64px] leading-[1.05] font-semibold text-ivory max-lg:text-[48px] max-md:text-[36px]">
+          </Reveal>
+          <Reveal
+            as="h1"
+            delay={0.09}
+            className="mb-4 font-display text-[64px] leading-[1.05] font-semibold text-ivory max-lg:text-[48px] max-md:mb-2 max-md:text-[28px]"
+          >
             {projectsPage.heroHeading}
-          </h1>
-          <p className="max-w-[640px] text-[17px] leading-[1.7] text-[#e7e1d6]">
+          </Reveal>
+          <Reveal
+            as="p"
+            delay={0.18}
+            className="max-w-[640px] text-[17px] leading-[1.7] text-[#dce3f2] max-md:text-[13px] max-md:leading-[1.5]"
+          >
             {projectsPage.heroIntro}
-          </p>
+          </Reveal>
         </div>
       </section>
 

@@ -3,6 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import SmartImage from "@/components/SmartImage";
 import ProjectVideo from "@/components/ProjectVideo";
+import Reveal from "@/components/Reveal";
+import BeforeAfterSlider from "@/components/BeforeAfterSlider";
+import ProjectScrollytelling from "@/components/ProjectScrollytelling";
+import DimensionLine from "@/components/DimensionLine";
 import { getProjectBySlug, getProjectSlugs } from "@/sanity/lib/fetchers";
 import { projectJsonLd } from "@/lib/jsonld";
 
@@ -51,6 +55,14 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
     image: project.galleryImages[i] ?? null,
   }));
 
+  const scrollItems = gallery.map((g, i) => {
+    let caption: string | undefined;
+    if (i === 0) caption = project.tagline || undefined;
+    else if (i === 2) caption = [project.scope, project.area].filter(Boolean).join(" · ") || undefined;
+    else if (i === 5) caption = `Completed for ${project.client} in ${project.location}`;
+    return { image: g.image, label: g.label, alt: `${project.title} — photo ${i + 1}`, caption };
+  });
+
   return (
     <>
       <script
@@ -58,7 +70,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         dangerouslySetInnerHTML={{ __html: JSON.stringify(projectJsonLd(project)) }}
       />
 
-      <section className="relative min-h-[460px] overflow-hidden">
+      <section id="site-hero" className="relative min-h-[460px] overflow-hidden">
         <SmartImage
           image={project.heroImage}
           alt={project.title}
@@ -66,17 +78,30 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           className="absolute inset-0 h-full w-full"
           priority
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,18,16,0.15)_0%,rgba(20,18,16,0.72)_100%)]" />
-        <div className="relative z-[2] flex max-w-[900px] flex-col justify-end px-16 pt-[120px] pb-14 max-md:px-6 max-md:pt-24 max-md:pb-10">
-          <Link href="/projects" className="mb-5 inline-block w-fit text-[13px] tracking-[1px] text-accent-light">
-            ← All Projects
-          </Link>
-          <div className="mb-3.5 text-[13px] font-semibold tracking-[4px] text-accent-light uppercase">
+        <div className="hero-overlay absolute inset-0" />
+        <div className="relative z-[2] flex max-w-[900px] flex-col justify-end px-16 pt-[120px] pb-14 max-md:px-6 max-md:pt-24 max-md:pb-8">
+          <Reveal as="div" delay={0} className="mb-5 w-fit max-md:mb-2">
+            <Link
+              href="/projects"
+              className="inline-block text-[13px] tracking-[1px] text-accent-light max-md:text-[12px]"
+            >
+              ← All Projects
+            </Link>
+          </Reveal>
+          <Reveal
+            as="div"
+            delay={0.09}
+            className="mb-3.5 text-[13px] font-semibold tracking-[4px] text-accent-light uppercase max-md:mb-2 max-md:text-[11px] max-md:tracking-[2px]"
+          >
             {project.status}
-          </div>
-          <h1 className="font-serif text-[58px] leading-[1.08] font-semibold text-ivory max-lg:text-[42px] max-md:text-[32px]">
+          </Reveal>
+          <Reveal
+            as="h1"
+            delay={0.18}
+            className="font-display text-[58px] leading-[1.08] font-semibold text-ivory max-lg:text-[42px] max-md:text-[26px]"
+          >
             {project.title}
-          </h1>
+          </Reveal>
         </div>
       </section>
 
@@ -101,7 +126,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           <div className="mb-[18px] text-[13px] font-semibold tracking-[4px] text-accent uppercase">
             Overview
           </div>
-          <h2 className="mb-6 font-serif text-[34px] font-semibold max-md:text-[26px]">
+          <h2 className="mb-6 font-display text-[34px] font-semibold max-md:text-[26px]">
             {project.tagline}
           </h2>
           <p className="mb-5 text-base leading-[1.9] text-body">{project.desc1}</p>
@@ -109,47 +134,34 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         </div>
       </section>
 
+      {project.beforeImage ? (
+        <section className="mx-auto max-w-[1400px] px-16 py-[100px] max-md:px-6 max-md:py-16">
+          <div className="mb-[18px] flex items-center gap-4 text-[13px] font-semibold tracking-[4px] text-accent uppercase">
+            Before / After
+            <DimensionLine className="text-accent" />
+          </div>
+          <h2 className="mb-10 font-display text-[38px] font-semibold max-md:text-[28px]">
+            See The Transformation
+          </h2>
+          <BeforeAfterSlider
+            beforeImage={project.beforeImage}
+            afterImage={project.heroImage ?? project.galleryImages[0]}
+            title={project.title}
+            className="h-[560px] w-full overflow-hidden rounded-[4px] max-md:h-[340px]"
+          />
+        </section>
+      ) : null}
+
       <section className="bg-alt px-16 py-[100px] max-md:px-6 max-md:py-16">
         <div className="mx-auto max-w-[1400px]">
-          <div className="mb-[18px] text-[13px] font-semibold tracking-[4px] text-accent uppercase">
+          <div className="mb-[18px] flex items-center gap-4 text-[13px] font-semibold tracking-[4px] text-accent uppercase">
             Gallery
+            <DimensionLine className="text-accent" />
           </div>
-          <h2 className="mb-12 font-serif text-[38px] font-semibold max-md:text-[28px]">
+          <h2 className="mb-12 font-display text-[38px] font-semibold max-md:text-[28px]">
             Project Photos
           </h2>
-          <div className="mb-6 grid grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] gap-6 max-md:grid-cols-1">
-            <SmartImage
-              image={gallery[0].image}
-              alt={`${project.title} — photo 1`}
-              label={gallery[0].label}
-              className="h-[480px] w-full rounded-[4px] max-md:h-[300px]"
-            />
-            <div className="grid grid-rows-2 gap-6">
-              <SmartImage
-                image={gallery[1].image}
-                alt={`${project.title} — photo 2`}
-                label={gallery[1].label}
-                className="h-[228px] w-full rounded-[4px]"
-              />
-              <SmartImage
-                image={gallery[2].image}
-                alt={`${project.title} — photo 3`}
-                label={gallery[2].label}
-                className="h-[228px] w-full rounded-[4px]"
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-3 gap-6 max-md:grid-cols-1">
-            {gallery.slice(3).map((g, i) => (
-              <SmartImage
-                key={i}
-                image={g.image}
-                alt={`${project.title} — photo ${i + 4}`}
-                label={g.label}
-                className="h-[260px] w-full rounded-[4px]"
-              />
-            ))}
-          </div>
+          <ProjectScrollytelling items={scrollItems} />
         </div>
       </section>
 
@@ -157,7 +169,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         <div className="mb-[18px] text-[13px] font-semibold tracking-[4px] text-accent uppercase">
           Walkthrough
         </div>
-        <h2 className="mb-12 font-serif text-[38px] font-semibold max-md:text-[28px]">
+        <h2 className="mb-12 font-display text-[38px] font-semibold max-md:text-[28px]">
           Project Video
         </h2>
         <ProjectVideo
