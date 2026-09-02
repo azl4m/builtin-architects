@@ -1,12 +1,10 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import CTABand from "@/components/CTABand";
-import { getCtaBand, getServices, getSiteSettings } from "@/sanity/lib/fetchers";
+import { getServices, getSiteSettings } from "@/sanity/lib/fetchers";
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
-  const [siteSettings, ctaBand, services] = await Promise.all([
+  const [siteSettings, services] = await Promise.all([
     getSiteSettings(),
-    getCtaBand(),
     getServices(),
   ]);
 
@@ -19,7 +17,6 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         services={services}
       />
       <main className="flex-1">{children}</main>
-      <CTABand eyebrow={ctaBand.eyebrow} heading={ctaBand.heading} buttonLabel={ctaBand.buttonLabel} />
       <Footer
         siteName={siteSettings.siteName}
         siteNameSub={siteSettings.siteNameSub}

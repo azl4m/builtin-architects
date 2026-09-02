@@ -24,8 +24,18 @@ export default function Footer({
   serviceTitles,
 }: FooterProps) {
   return (
-    <footer className="bg-footer px-16 pt-20 pb-10 text-footer-muted max-md:px-6 max-md:pt-14">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-[2fr_1fr_1fr_1.4fr] gap-[60px] border-b border-hairline-dark pb-14 max-lg:grid-cols-2 max-lg:gap-10 max-sm:grid-cols-1">
+    <footer className="relative overflow-hidden bg-footer px-16 pt-20 pb-10 text-footer-muted max-md:px-6 max-md:pt-14">
+      {/* Background Architectural Image */}
+      <img
+        src="https://res.cloudinary.com/ddblal31l/image/upload/v1788186594/ChatGPT_Image_Aug_31_2026_07_47_23_PM_atpums.png"
+        alt="Footer architectural background"
+        className="absolute inset-0 h-full w-full object-cover select-none pointer-events-none opacity-25"
+      />
+      {/* Dark overlay for contrast and crisp readability */}
+      <div className="absolute inset-0 bg-ink/70 z-10 pointer-events-none" />
+
+      {/* Footer Content */}
+      <div className="relative z-20 mx-auto grid max-w-[1400px] grid-cols-[2fr_1fr_1fr_1.4fr] gap-[60px] border-b border-hairline-dark pb-14 max-lg:grid-cols-2 max-lg:gap-10 max-sm:grid-cols-1">
         <div>
           <div className="mb-3 flex items-center gap-3">
             <SiteLogo logo={logo} alt={siteName} size={34} />
@@ -68,7 +78,7 @@ export default function Footer({
           </div>
         </div>
       </div>
-      <div className="mx-auto max-w-[1400px] pt-8 text-[13px] text-footer-muted/70">
+      <div className="relative z-20 mx-auto max-w-[1400px] pt-8 text-[13px] text-footer-muted/70">
         © {new Date().getFullYear()} {siteName} {siteNameSub}.
       </div>
     </footer>

@@ -10,8 +10,12 @@ import AnimatedStat from "@/components/AnimatedStat";
 import DimensionLine from "@/components/DimensionLine";
 import FeaturedProjectsShowcase from "@/components/FeaturedProjectsShowcase";
 import MasonryGallery from "@/components/MasonryGallery";
+import TestimonialCardStack from "@/components/TestimonialCardStack";
+import CTABand from "@/components/CTABand";
+import ClientLogos from "@/components/ClientLogos";
 import { SERVICE_ICONS } from "@/lib/serviceIcons";
 import {
+  getCtaBand,
   getHomePage,
   getProjects,
   getServices,
@@ -27,12 +31,13 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [home, projects, services, testimonials, siteSettings] = await Promise.all([
+  const [home, projects, services, testimonials, siteSettings, ctaBand] = await Promise.all([
     getHomePage(),
     getProjects(),
     getServices(),
     getTestimonials(),
     getSiteSettings(),
+    getCtaBand(),
   ]);
 
   const featuredHome = projects.slice(0, 4);
@@ -47,6 +52,7 @@ export default async function HomePage() {
 
   return (
     <>
+      {/* 1. HERO */}
       <section id="site-hero" className="relative h-dvh min-h-[560px] overflow-hidden">
         <SmartImage
           image={home.heroImage}
@@ -95,41 +101,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-[1400px] grid-cols-2 items-center gap-20 px-16 py-[140px] max-lg:grid-cols-1 max-lg:gap-12 max-md:px-6 max-md:py-20">
-        <ZoomReveal className="rounded-[4px] h-[520px] w-full">
-          <SmartImage
-            image={home.aboutImage}
-            alt={home.aboutHeading}
-            label="Studio / build photo"
-            className="h-full w-full object-cover"
-          />
-        </ZoomReveal>
-        <div>
-          <div className="mb-[18px] text-[13px] font-semibold tracking-[4px] text-accent uppercase">
-            {home.aboutEyebrow}
-          </div>
-          <h2 className="mb-7 font-display text-[44px] leading-[1.15] font-semibold max-md:text-[32px]">
-            {home.aboutHeading}
-          </h2>
-          {home.aboutParagraphs.map((paragraph, i) => (
-            <p
-              key={i}
-              className={`text-base leading-[1.85] text-body ${
-                i === home.aboutParagraphs.length - 1 ? "mb-9" : "mb-5"
-              }`}
-            >
-              {paragraph}
-            </p>
-          ))}
-          <Link
-            href="/about"
-            className="border-b-2 border-accent pb-1 text-sm font-bold tracking-[1px] text-ink uppercase"
-          >
-            Read More →
-          </Link>
-        </div>
-      </section>
-
+      {/* 2. VALUES / NUMBERS (STATS) */}
       <section className="blueprint-grid grid grid-cols-4 gap-10 bg-ink px-16 py-20 text-center text-ivory max-lg:grid-cols-2 max-lg:gap-8 max-md:px-6">
         {siteSettings.stats.map((stat) => (
           <div key={stat.label}>
@@ -141,6 +113,7 @@ export default async function HomePage() {
         ))}
       </section>
 
+      {/* 3. OUR SERVICES */}
       <section className="mx-auto max-w-[1400px] px-16 py-[140px] max-md:px-6 max-md:py-20">
         <div className="mb-[70px] text-center">
           <div className="mb-[18px] flex items-center justify-center gap-4 text-[13px] font-semibold tracking-[4px] text-accent uppercase">
@@ -202,7 +175,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-alt">
+      {/* 4. FEATURED PROJECTS */}
+      <section className="bg-alt mb-20 md:mb-32">
         <FeaturedProjectsShowcase
           eyebrow={home.featuredProjectsEyebrow}
           heading={home.featuredProjectsHeading}
@@ -210,45 +184,66 @@ export default async function HomePage() {
         />
       </section>
 
-      <section className="mx-auto max-w-[1200px] px-16 py-[140px] max-md:px-6 max-md:py-20">
-        <div className="mb-16 text-center">
-          <div className="mb-[18px] text-[13px] font-semibold tracking-[4px] text-accent uppercase">
-            {home.testimonialsEyebrow}
-          </div>
-          <h2 className="font-display text-[44px] font-semibold max-md:text-[32px]">
-            {home.testimonialsHeading}
-          </h2>
-        </div>
-        <div className="grid grid-cols-3 gap-9 max-lg:grid-cols-1">
-          {testimonials.map((t) => (
-            <div key={t._id} className="border border-hairline bg-surface px-8 py-10">
-              <p className="mb-7 font-display text-[19px] leading-[1.7] text-copy-dark italic">
-                &ldquo;{t.quote}&rdquo;
-              </p>
-              <div className="text-sm font-bold">{t.name}</div>
-              <div className="text-[13px] text-muted">{t.role}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* 5. LET'S BUILD PROJECT SECTION (CTA BAND) */}
+      <CTABand
+        eyebrow={ctaBand.eyebrow}
+        heading={ctaBand.heading}
+        buttonLabel={ctaBand.buttonLabel}
+      />
 
-      <section className="flex flex-wrap items-center justify-center gap-20 bg-alt px-16 py-16 max-md:gap-10 max-md:px-6">
-        {(home.clientLogos.length ? home.clientLogos : [null, null, null, null]).map((logo, i) => (
+      {/* 6. ABOUT US */}
+      <section className="mx-auto grid max-w-[1400px] grid-cols-1 lg:grid-cols-12 items-center gap-12 lg:gap-16 px-16 py-[140px] max-md:px-6 max-md:py-20">
+        <ZoomReveal className="rounded-[6px] h-[480px] lg:h-[620px] xl:h-[660px] w-full lg:col-span-7 shadow-xl">
           <SmartImage
-            key={i}
-            image={logo}
-            alt="Client logo"
-            label={`Client logo ${i + 1}`}
-            className="h-[70px] w-[160px] rounded-[2px]"
+            image={home.aboutImage}
+            alt={home.aboutHeading}
+            label="Studio / build photo"
+            className="h-full w-full object-cover"
           />
-        ))}
+        </ZoomReveal>
+        <div className="lg:col-span-5">
+          <div className="mb-[18px] text-[13px] font-semibold tracking-[4px] text-accent uppercase">
+            {home.aboutEyebrow}
+          </div>
+          <h2 className="mb-7 font-display text-[44px] leading-[1.15] font-semibold max-md:text-[32px]">
+            {home.aboutHeading}
+          </h2>
+          {home.aboutParagraphs.map((paragraph, i) => (
+            <p
+              key={i}
+              className={`text-base leading-[1.85] text-body ${
+                i === home.aboutParagraphs.length - 1 ? "mb-9" : "mb-5"
+              }`}
+            >
+              {paragraph}
+            </p>
+          ))}
+          <Link
+            href="/about"
+            className="border-b-2 border-accent pb-1 text-sm font-bold tracking-[1px] text-ink uppercase"
+          >
+            Read More →
+          </Link>
+        </div>
       </section>
 
+      {/* 7. TESTIMONIALS */}
+      <TestimonialCardStack
+        testimonials={testimonials}
+        eyebrow={home.testimonialsEyebrow ?? "TESTIMONIALS"}
+        heading="Trusted by homeowners & leaders across Kerala."
+      />
+
+      {/* 8. MASONRY GALLERY */}
       <MasonryGallery
         eyebrow={home.galleryEyebrow ?? "Visual Showcase"}
         heading={home.galleryHeading ?? "Our Work Gallery"}
         images={home.galleryImages ?? []}
       />
+
+      {/* 9. CLIENT LOGOS */}
+      <ClientLogos logos={home.clientLogos} />
     </>
   );
 }
+

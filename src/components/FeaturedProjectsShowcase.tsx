@@ -12,155 +12,150 @@ interface FeaturedProjectsShowcaseProps {
   projects: CmsProject[];
 }
 
-/** Keeps a keyframe range strictly increasing — useTransform requires this,
- * and clamping the first/last segment to [0,1] can otherwise collapse two
- * points to the same value (e.g. project 0's range starts at 0 twice). */
-function safeRange(values: number[]): number[] {
-  const out: number[] = [];
-  let prev = -Infinity;
-  for (const v of values) {
-    const clamped = Math.min(1, Math.max(0, v));
-    const safe = clamped <= prev ? prev + 0.0001 : clamped;
-    out.push(safe);
-    prev = safe;
-  }
-  return out;
-}
-
-interface PanelProps {
+interface StackedPanelProps {
   project: CmsProject;
   index: number;
-  count: number;
+  total: number;
   scrollYProgress: MotionValue<number>;
 }
 
-function Panel({ project, index, count, scrollYProgress }: PanelProps) {
-  const segment = 1 / count;
-  const start = index * segment;
-  const end = start + segment;
-  const overlap = segment * 0.3;
+function StackedPanel({ project, index, total, scrollYProgress }: StackedPanelProps) {
   const isFirst = index === 0;
-  const isLast = index === count - 1;
 
-  // The first project has nothing to crossfade in from, so it's already
-  // fully visible the instant the section pins — no fade-in phase. The
-  // last project stays fully visible right through to release instead of
-  // fading out beforehand (nothing crossfades in after it).
-  const points: number[] = [];
-  const opacityOut: number[] = [];
-  const yOut: number[] = [];
+  // Calculate exact scroll keyframes for smooth 1-scroll card stacking
+  const step = 1 / Math.max(1, total - 1);
+  const start = Math.max(0, (index - 1) * step);
+  const end = Math.min(1, index * step);
 
-  if (!isFirst) {
-    points.push(start - overlap);
-    opacityOut.push(0);
-    yOut.push(24);
-  }
-  points.push(start);
-  opacityOut.push(1);
-  yOut.push(0);
-  if (!isLast) {
-    points.push(end - overlap);
-    opacityOut.push(1);
-    yOut.push(0);
-    points.push(end);
-    opacityOut.push(0);
-    yOut.push(-24);
-  } else {
-    points.push(1);
-    opacityOut.push(1);
-    yOut.push(0);
-  }
+  // Next card transition range (when the card AFTER this one enters)
+  const nextStart = Math.max(0, index * step);
+  const nextEnd = Math.min(1, (index + 1) * step);
 
-  const fadeRange = safeRange(points);
-  const opacity = useTransform(scrollYProgress, fadeRange, opacityOut);
-  const y = useTransform(scrollYProgress, fadeRange, yOut);
-  const scale = useTransform(scrollYProgress, [start, Math.min(1, start + overlap)], [1.02, 1]);
+  // Y Translation: Card 0 is fixed at 0. Card 1+ enters from translateY 100% to 0% smoothly
+  const yPercent = useTransform(
+    scrollYProgress,
+    [start, end],
+    isFirst ? [0, 0] : [100, 0]
+  );
+
+  // Scale down smoothly when the NEXT card slides over this one
+  const scale = useTransform(
+    scrollYProgress,
+    [nextStart, nextEnd],
+    index < total - 1 ? [1, 0.93] : [1, 1]
+  );
+
+  // Opacity dim when the NEXT card slides over this one
+  const opacity = useTransform(
+    scrollYProgress,
+    [nextStart, nextEnd],
+    index < total - 1 ? [1, 0.4] : [1, 1]
+  );
 
   return (
     <motion.div
-      className="absolute inset-0 flex items-center justify-center px-[3vw] max-md:px-4"
-      style={{ opacity, zIndex: index }}
+      className="absolute inset-0 w-full px-0 flex flex-col justify-end"
+      style={{
+        y: isFirst ? 0 : useTransform(yPercent, (v) => `${v}%`),
+        scale: index < total - 1 ? scale : 1,
+        opacity: index < total - 1 ? opacity : 1,
+        zIndex: index + 1,
+      }}
     >
-      <motion.div
-        className="relative h-full max-h-[76vh] w-full overflow-hidden rounded-[4px] max-md:max-h-[58vh]"
-        style={{ scale, y }}
-      >
+      {/* Edge-to-edge full width card with rounded top corners matching screenshot */}
+      <div className="relative h-[80vh] md:h-[84vh] w-full overflow-hidden rounded-t-[32px] md:rounded-t-[44px] border-t border-hairline/60 bg-ink shadow-2xl">
         <SmartImage
           image={project.heroImage}
           alt={project.cardTitle}
           label={project.cardTitle}
-          className="absolute inset-0 h-full w-full"
+          className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,transparent_0%,rgba(10,20,40,0.75)_100%)] px-10 pt-28 pb-10 max-md:px-6 max-md:pt-16 max-md:pb-6">
-          <div className="font-display text-3xl font-semibold text-ivory max-md:text-xl">{project.cardTitle}</div>
-          <div className="mt-1.5 text-sm text-[#dce3f2] max-md:text-xs">{project.cardMeta[0]}</div>
+        {/* Dark overlay gradient for crisp text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+
+        {/* Project Details Content */}
+        <div className="absolute inset-x-0 bottom-0 px-6 md:px-16 pt-24 pb-10 max-md:pb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <span className="inline-block mb-2 text-xs font-semibold tracking-[3px] text-accent-light uppercase">
+              {project.category || "Selected Work"}
+            </span>
+            <h3 className="font-display text-3xl md:text-5xl font-semibold text-ivory max-md:text-2xl">
+              {project.cardTitle}
+            </h3>
+            {project.cardMeta?.[0] && (
+              <p className="mt-2 text-sm md:text-base text-gray-300">
+                {project.cardMeta[0]}
+              </p>
+            )}
+          </div>
+
+          <Link
+            href={`/projects/${project.slug}`}
+            className="inline-flex items-center gap-2 self-start md:self-end rounded-full border border-white/30 bg-white/10 px-6 py-3 text-xs font-bold tracking-[1.5px] text-white uppercase backdrop-blur-md transition-all hover:bg-white hover:text-ink"
+          >
+            View Project →
+          </Link>
         </div>
-      </motion.div>
+      </div>
     </motion.div>
   );
 }
 
 function SectionHeader({ eyebrow, heading }: { eyebrow: string; heading: string }) {
   return (
-    <div className="mx-auto mb-6 flex w-full max-w-[1400px] flex-wrap items-center justify-between gap-4 px-16 max-md:px-6">
+    <div className="mx-auto mb-6 flex w-full max-w-[1400px] flex-wrap items-center justify-between gap-4 px-6 md:px-16">
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <div className="text-[12px] font-semibold tracking-[4px] text-accent uppercase">{eyebrow}</div>
-        <h2 className="font-display text-2xl font-semibold max-md:text-xl">{heading}</h2>
+        <div className="text-[12px] font-semibold tracking-[4px] text-accent uppercase">
+          {eyebrow}
+        </div>
+        <h2 className="font-display text-2xl md:text-3xl font-semibold max-md:text-xl">
+          {heading}
+        </h2>
       </div>
-      <Link href="/projects" className="border-b-2 border-accent pb-1 text-sm font-bold tracking-[1px] text-ink uppercase">
+      <Link
+        href="/projects"
+        className="border-b-2 border-accent pb-1 text-sm font-bold tracking-[1px] text-ink uppercase"
+      >
         All Projects →
       </Link>
     </div>
   );
 }
 
-/**
- * Scroll-driven full-screen showcase: pins via CSS `position: sticky` (no
- * JS scroll-jacking — trackpad/wheel/touch all behave natively) while a
- * tall spacer container gives scroll distance for the crossfade between
- * projects. Progress is read from actual scroll position (useScroll), not
- * time, so it's fully reversible and always in sync with the user's input.
- */
-export default function FeaturedProjectsShowcase({ eyebrow, heading, projects }: FeaturedProjectsShowcaseProps) {
+export default function FeaturedProjectsShowcase({
+  eyebrow,
+  heading,
+  projects,
+}: FeaturedProjectsShowcaseProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  // Reads as "not reduced" on both the server render and the client's first
-  // paint (matching, so hydration never conflicts), then flips after mount
-  // if the OS preference is actually set — window.matchMedia isn't available
-  // during SSR, and checking it synchronously on the client's first render
-  // would disagree with the server's render and trigger a hydration error.
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
+
   useEffect(() => {
     setShouldReduceMotion(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }, []);
-  // Bound directly to real scroll position — no spring/lag layer. A spring
-  // trails slightly behind the actual scroll input, which reads as
-  // resistance ("hard to scroll") rather than smoothness; direct binding is
-  // what keeps the animation feeling attached to the user's own gesture.
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
+
+  const total = projects.length;
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
 
   if (shouldReduceMotion) {
     return (
-      <div className="mx-auto max-w-[1400px] px-16 py-[140px] max-md:px-6 max-md:py-20">
-        <div className="mb-14 flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <div className="mb-[18px] text-[13px] font-semibold tracking-[4px] text-accent uppercase">{eyebrow}</div>
-            <h2 className="font-display text-[44px] font-semibold max-md:text-[32px]">{heading}</h2>
-          </div>
-          <Link href="/projects" className="border-b-2 border-accent pb-1 text-sm font-bold tracking-[1px] text-ink uppercase">
-            All Projects →
-          </Link>
-        </div>
-        <div className="flex flex-col gap-10">
+      <div className="w-full px-6 md:px-16 py-20">
+        <SectionHeader eyebrow={eyebrow} heading={heading} />
+        <div className="flex flex-col gap-8">
           {projects.map((project) => (
-            <Link key={project._id} href="/projects" className="block text-ink no-underline">
-              <SmartImage
-                image={project.heroImage}
-                alt={project.cardTitle}
-                label={project.cardTitle}
-                className="mb-4 h-[380px] w-full rounded-[4px] max-md:h-[240px]"
-              />
-              <div className="font-display text-2xl font-semibold">{project.cardTitle}</div>
-              <div className="text-sm text-muted">{project.cardMeta[0]}</div>
+            <Link key={project._id} href={`/projects/${project.slug}`} className="block w-full">
+              <div className="relative h-[400px] w-full overflow-hidden rounded-t-[32px]">
+                <SmartImage
+                  image={project.heroImage}
+                  alt={project.cardTitle}
+                  label={project.cardTitle}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <h3 className="mt-4 font-display text-2xl font-semibold">{project.cardTitle}</h3>
             </Link>
           ))}
         </div>
@@ -169,12 +164,22 @@ export default function FeaturedProjectsShowcase({ eyebrow, heading, projects }:
   }
 
   return (
-    <div ref={containerRef} style={{ height: `${projects.length * 70}vh` }} className="relative">
-      <div className="sticky top-0 flex h-screen flex-col overflow-hidden pt-28 pb-8 max-md:pt-24 max-md:pb-5">
+    <div
+      ref={containerRef}
+      style={{ height: `${total > 1 ? total * 90 : 100}vh` }}
+      className="relative w-full overflow-visible"
+    >
+      <div className="sticky top-0 flex h-screen w-full flex-col overflow-hidden pt-12 md:pt-16 pb-0">
         <SectionHeader eyebrow={eyebrow} heading={heading} />
-        <div className="relative flex-1">
+        <div className="relative flex-1 w-full px-0">
           {projects.map((project, i) => (
-            <Panel key={project._id} project={project} index={i} count={projects.length} scrollYProgress={scrollYProgress} />
+            <StackedPanel
+              key={project._id}
+              project={project}
+              index={i}
+              total={total}
+              scrollYProgress={scrollYProgress}
+            />
           ))}
         </div>
       </div>
