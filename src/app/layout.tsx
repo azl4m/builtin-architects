@@ -69,6 +69,12 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${sora.variable} ${manrope.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://stream.mux.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://image.mux.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://stream.mux.com" />
+        <link rel="dns-prefetch" href="https://image.mux.com" />
+      </head>
       <body className="antialiased">
         <script
           type="application/ld+json"
