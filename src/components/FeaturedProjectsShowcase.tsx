@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring, type MotionValue } from "framer-motion";
 import SmartImage from "@/components/SmartImage";
 import type { CmsProject } from "@/sanity/lib/types";
 
@@ -22,34 +22,37 @@ interface StackedPanelProps {
 function StackedPanel({ project, index, total, scrollYProgress }: StackedPanelProps) {
   const isFirst = index === 0;
 
-  // Calculate exact scroll keyframes for smooth 1-scroll card stacking
-  const step = 1 / Math.max(1, total - 1);
+  // Compress transitions into 0.0 -> 0.82 range, leaving 0.82 -> 1.0 (18%) as a smooth
+  // resting window before the sticky container unpins. Prevents snapping at bottom.
+  const activeRange = 0.82;
+  const numTransitions = Math.max(1, total - 1);
+  const step = activeRange / numTransitions;
+
   const start = Math.max(0, (index - 1) * step);
-  const end = Math.min(1, index * step);
+  const end = Math.min(activeRange, index * step);
 
-  // Next card transition range (when the card AFTER this one enters)
   const nextStart = Math.max(0, index * step);
-  const nextEnd = Math.min(1, (index + 1) * step);
+  const nextEnd = Math.min(activeRange, (index + 1) * step);
 
-  // Y Translation: Card 0 is fixed at 0. Card 1+ enters from translateY 100% to 0% smoothly
+  // Y Translation: Card 0 is fixed. Card 1+ slides up from 100% to 0%
   const yPercent = useTransform(
     scrollYProgress,
     [start, end],
     isFirst ? [0, 0] : [100, 0]
   );
 
-  // Scale down smoothly when the NEXT card slides over this one
+  // Smooth scale down when next card slides over
   const scale = useTransform(
     scrollYProgress,
     [nextStart, nextEnd],
-    index < total - 1 ? [1, 0.93] : [1, 1]
+    index < total - 1 ? [1, 0.92] : [1, 1]
   );
 
-  // Opacity dim when the NEXT card slides over this one
+  // Opacity dim when next card slides over
   const opacity = useTransform(
     scrollYProgress,
     [nextStart, nextEnd],
-    index < total - 1 ? [1, 0.4] : [1, 1]
+    index < total - 1 ? [1, 0.45] : [1, 1]
   );
 
   return (
@@ -60,10 +63,12 @@ function StackedPanel({ project, index, total, scrollYProgress }: StackedPanelPr
         scale: index < total - 1 ? scale : 1,
         opacity: index < total - 1 ? opacity : 1,
         zIndex: index + 1,
+        willChange: "transform, opacity",
+        transform: "translateZ(0)",
       }}
     >
-      {/* Edge-to-edge full width card with rounded top corners matching screenshot */}
-      <div className="relative h-[80vh] md:h-[84vh] w-full overflow-hidden rounded-t-[32px] md:rounded-t-[44px] border-t border-hairline/60 bg-ink shadow-2xl">
+      {/* Edge-to-edge full width card with rounded top corners and subtle glass border */}
+      <div className="relative h-[80vh] md:h-[84vh] w-full overflow-hidden rounded-t-[32px] md:rounded-t-[44px] border-t border-white/20 bg-ink shadow-2xl">
         <SmartImage
           image={project.heroImage}
           alt={project.cardTitle}
@@ -71,7 +76,7 @@ function StackedPanel({ project, index, total, scrollYProgress }: StackedPanelPr
           className="absolute inset-0 h-full w-full object-cover"
         />
         {/* Dark overlay gradient for crisp text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent" />
 
         {/* Project Details Content */}
         <div className="absolute inset-x-0 bottom-0 px-6 md:px-16 pt-24 pb-10 max-md:pb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -140,6 +145,14 @@ export default function FeaturedProjectsShowcase({
     offset: ["start start", "end end"],
   });
 
+  // Apply spring physics to dampen raw scroll ticks into liquid-smooth motion
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 22,
+    mass: 0.1,
+    restDelta: 0.0001,
+  });
+
   if (shouldReduceMotion) {
     return (
       <div className="w-full px-6 md:px-16 py-20">
@@ -166,7 +179,7 @@ export default function FeaturedProjectsShowcase({
   return (
     <div
       ref={containerRef}
-      style={{ height: `${total > 1 ? total * 90 : 100}vh` }}
+      style={{ height: `${total > 1 ? total * 100 : 100}vh` }}
       className="relative w-full overflow-visible"
     >
       <div className="sticky top-0 flex h-screen w-full flex-col overflow-hidden pt-12 md:pt-16 pb-0">
@@ -178,7 +191,7 @@ export default function FeaturedProjectsShowcase({
               project={project}
               index={i}
               total={total}
-              scrollYProgress={scrollYProgress}
+              scrollYProgress={smoothProgress}
             />
           ))}
         </div>
@@ -186,3 +199,4 @@ export default function FeaturedProjectsShowcase({
     </div>
   );
 }
+
