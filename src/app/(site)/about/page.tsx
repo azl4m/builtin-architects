@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Target, Compass } from "lucide-react";
 import SmartImage from "@/components/SmartImage";
 import Reveal from "@/components/Reveal";
 import AnimatedStat from "@/components/AnimatedStat";
@@ -89,20 +90,76 @@ export default async function AboutPage() {
         />
       </section>
 
-      <section className="bg-alt px-16 py-[120px] max-md:px-6 max-md:py-16">
-        <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-[60px] max-md:grid-cols-1 max-md:gap-8">
-          <div className="border border-hairline bg-surface p-12 max-md:p-8">
-            <h3 className="mb-[18px] font-display text-[28px] font-semibold text-accent">
-              {about.missionTitle}
-            </h3>
-            <p className="text-base leading-[1.85] text-body">{about.missionText}</p>
-          </div>
-          <div className="border border-hairline bg-surface p-12 max-md:p-8">
-            <h3 className="mb-[18px] font-display text-[28px] font-semibold text-accent">
-              {about.visionTitle}
-            </h3>
-            <p className="text-base leading-[1.85] text-body">{about.visionText}</p>
-          </div>
+      <section className="relative overflow-hidden bg-alt px-16 py-[120px] max-md:px-6 max-md:py-16">
+        {/* Architectural grid overlay */}
+        <div className="blueprint-grid absolute inset-0 opacity-40 pointer-events-none" />
+
+        <div className="relative z-10 mx-auto grid max-w-[1400px] grid-cols-2 gap-10 max-md:grid-cols-1 max-md:gap-6">
+          {/* Mission Card */}
+          <Reveal direction="up" delay={0.1} viewTriggered={true} className="h-full">
+            <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-xl border border-hairline/80 bg-surface/90 backdrop-blur-sm p-12 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-accent/40 hover:shadow-xl active:scale-[0.98] active:border-accent/60 max-md:p-7">
+              {/* Glowing Top Accent Line - Always subtly visible & pulsing on mobile */}
+              <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-accent via-accent/80 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-md:opacity-90 max-md:animate-pulse" />
+              
+              {/* Background Watermark Number */}
+              <div className="pointer-events-none absolute -bottom-6 -right-2 font-display text-[140px] font-extrabold leading-none text-accent/5 select-none transition-colors duration-300 group-hover:text-accent/10 max-md:text-[110px] max-md:opacity-80">
+                01
+              </div>
+
+              <div className="relative z-10 flex flex-col h-full justify-between">
+                <div>
+                  <div className="mb-6 flex items-center justify-between">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-accent/10 px-3.5 py-1 text-[11px] font-bold tracking-[2px] text-accent uppercase">
+                      Our Purpose
+                    </span>
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-accent/10 text-accent transition-transform duration-300 group-hover:scale-110 group-hover:bg-accent group-hover:text-ivory max-md:ring-2 max-md:ring-accent/20">
+                      <Target className="h-5 w-5" />
+                    </div>
+                  </div>
+
+                  <h3 className="mb-4 font-display text-[32px] font-semibold text-ink max-md:text-[24px]">
+                    {about.missionTitle}
+                  </h3>
+                </div>
+                <p className="text-base leading-[1.85] text-body/90 max-md:text-[15px]">
+                  {about.missionText}
+                </p>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* Vision Card */}
+          <Reveal direction="up" delay={0.25} viewTriggered={true} className="h-full">
+            <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-xl border border-hairline/80 bg-surface/90 backdrop-blur-sm p-12 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-accent/40 hover:shadow-xl active:scale-[0.98] active:border-accent/60 max-md:p-7">
+              {/* Glowing Top Accent Line - Always subtly visible & pulsing on mobile */}
+              <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-accent via-accent/80 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 max-md:opacity-90 max-md:animate-pulse" />
+              
+              {/* Background Watermark Number */}
+              <div className="pointer-events-none absolute -bottom-6 -right-2 font-display text-[140px] font-extrabold leading-none text-accent/5 select-none transition-colors duration-300 group-hover:text-accent/10 max-md:text-[110px] max-md:opacity-80">
+                02
+              </div>
+
+              <div className="relative z-10 flex flex-col h-full justify-between">
+                <div>
+                  <div className="mb-6 flex items-center justify-between">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-accent/10 px-3.5 py-1 text-[11px] font-bold tracking-[2px] text-accent uppercase">
+                      Our Aspiration
+                    </span>
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-accent/10 text-accent transition-transform duration-300 group-hover:scale-110 group-hover:bg-accent group-hover:text-ivory max-md:ring-2 max-md:ring-accent/20">
+                      <Compass className="h-5 w-5" />
+                    </div>
+                  </div>
+
+                  <h3 className="mb-4 font-display text-[32px] font-semibold text-ink max-md:text-[24px]">
+                    {about.visionTitle}
+                  </h3>
+                </div>
+                <p className="text-base leading-[1.85] text-body/90 max-md:text-[15px]">
+                  {about.visionText}
+                </p>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
