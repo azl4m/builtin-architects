@@ -29,14 +29,14 @@ export default function ProjectsGrid({ featured, rest }: ProjectsGridProps) {
 
   return (
     <>
-      <div className="mx-auto flex max-w-[1400px] gap-9 border-b border-hairline px-16 pt-14 max-md:gap-5 max-md:px-6">
+      <div className="mx-auto flex max-w-[1400px] gap-8 md:gap-9 overflow-x-auto no-scrollbar border-b border-hairline px-6 md:px-16 pt-10 md:pt-14 whitespace-nowrap">
         {TABS.map((t) => (
           <button
             key={t}
             type="button"
             onClick={() => setTab(t)}
-            className={`border-b-2 pb-2.5 text-[13px] tracking-[1px] uppercase transition-colors ${
-              tab === t ? "border-accent text-ink" : "border-transparent text-muted hover:text-ink"
+            className={`shrink-0 border-b-2 pb-2.5 text-xs md:text-[13px] tracking-[1px] uppercase transition-colors ${
+              tab === t ? "border-accent text-ink font-semibold" : "border-transparent text-muted hover:text-ink"
             }`}
           >
             {t}
