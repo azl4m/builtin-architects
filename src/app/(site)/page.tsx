@@ -62,9 +62,9 @@ export default async function HomePage() {
           priority
         />
         {home.heroVideo?.playbackId && home.heroVideo.status === "ready" ? (
-          <HeroVideo playbackId={home.heroVideo.playbackId} className="absolute inset-0 h-full w-full" />
+          <HeroVideo playbackId={home.heroVideo.playbackId} className="absolute inset-0 z-10 h-full w-full" />
         ) : null}
-        <div className="hero-overlay absolute inset-0" />
+        <div className="hero-overlay absolute inset-0 z-20" />
         <div className="absolute inset-0 z-30 flex max-w-[900px] flex-col justify-end px-16 pb-20 max-md:px-6 max-md:pb-10">
           <TextLoop
             text={heroEyebrow}
