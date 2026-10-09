@@ -1,6 +1,8 @@
-"use client";
+﻿"use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
+import { Plus } from "lucide-react";
+import { useFaqAccordion } from "@/components/FaqAccordionProvider";
 import type { FaqItem } from "@/sanity/lib/types";
 
 interface FaqAccordionProps {
@@ -8,55 +10,50 @@ interface FaqAccordionProps {
 }
 
 export default function FaqAccordion({ items }: FaqAccordionProps) {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-
-  const toggle = (index: number) => {
-    setActiveIndex(activeIndex === index ? null : index);
+  const prefix = useId();
+  const shared = useFaqAccordion();
+  const [localActiveId, setLocalActiveId] = useState<string | null>(null);
+  const activeId = shared ? shared.activeId : localActiveId;
+  const toggle = (id: string) => {
+    if (shared) shared.toggle(id);
+    else setLocalActiveId((current) => current === id ? null : id);
   };
 
-  if (!items || items.length === 0) return null;
+  if (!items?.length) return null;
 
   return (
     <div className="flex flex-col border-t border-hairline">
       {items.map((item, index) => {
-        const isOpen = activeIndex === index;
+        const id = `${prefix}-${index}`;
+        const isOpen = activeId === id;
         return (
-          <div
-            key={index}
-            className="border-b border-hairline py-5 transition-colors duration-300"
-          >
+          <div key={id} className={`border-b border-hairline transition-colors duration-300 motion-reduce:transition-none ${isOpen ? "bg-alt/60" : ""}`}>
             <h3>
               <button
                 type="button"
-                onClick={() => toggle(index)}
+                onClick={() => toggle(id)}
                 aria-expanded={isOpen}
-                aria-controls={`faq-answer-${index}`}
-                id={`faq-btn-${index}`}
-                className="flex w-full items-center justify-between gap-4 text-left font-display text-lg font-semibold text-ink hover:text-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:rounded-sm py-1.5 transition-colors duration-200"
+                aria-controls={`${id}-answer`}
+                id={`${id}-button`}
+                className={`group flex min-h-16 w-full items-center justify-between gap-5 rounded-sm px-3 py-5 text-left font-display text-base font-semibold transition-colors duration-200 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:px-4 md:text-lg ${isOpen ? "text-accent" : "text-ink"}`}
               >
                 <span>{item.question}</span>
-                <span className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full bg-alt text-accent">
-                  <svg
-                    className={`h-3 w-3 transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={3}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                  </svg>
+                <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 ${isOpen ? "bg-accent text-ivory" : "bg-alt text-accent group-hover:bg-accent/10"}`}>
+                  <Plus aria-hidden="true" size={16} className={`transition-transform duration-300 ease-in-out motion-reduce:transition-none ${isOpen ? "rotate-45" : ""}`} />
                 </span>
               </button>
             </h3>
             <div
-              id={`faq-answer-${index}`}
+              id={`${id}-answer`}
               role="region"
-              aria-labelledby={`faq-btn-${index}`}
-              className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                isOpen ? "max-h-[500px] opacity-100 mt-3" : "max-h-0 opacity-0"
-              }`}
+              aria-labelledby={`${id}-button`}
+              aria-hidden={!isOpen}
+              inert={!isOpen}
+              className={`grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
             >
-              <p className="text-sm leading-[1.8] text-body pr-8">{item.answer}</p>
+              <div className="min-h-0 overflow-hidden">
+                <p className="max-w-[760px] px-3 pb-6 text-[15px] leading-7 text-body md:px-4 md:pr-14">{item.answer}</p>
+              </div>
             </div>
           </div>
         );

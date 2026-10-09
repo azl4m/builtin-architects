@@ -77,7 +77,7 @@ export default async function ContactPage() {
           </div>
         </div>
 
-        <ContactForm />
+        <ContactForm whatsappNumber={siteSettings.whatsappNumber} />
       </section>
 
       <section className="mx-auto max-w-[1400px] px-16 pb-[120px] max-md:px-6 max-md:pb-16">

@@ -76,7 +76,7 @@ export const allServiceSlugsQuery = groq`*[_type == "service" && defined(slug.cu
 
 export const siteSettingsQuery = groq`*[_type == "siteSettings"][0]{
   logo, siteName, siteNameSub, businessName, tagline, description, longDescription, footerBlurb,
-  contactOffice, contactCity, contactState, contactCountry, businessPark, contactPhone, contactEmail, contactHours,
+  contactOffice, contactCity, contactState, contactCountry, businessPark, whatsappNumber, contactPhone, contactEmail, contactHours,
   yearsOfExperience, "socialLinks": coalesce(socialLinks, []), defaultSeo,
   "stats": coalesce(stats, [])
 }`;
@@ -122,4 +122,10 @@ export const contactPageQuery = groq`*[_type == "contactPage"][0]{
   heroEyebrow, heroHeading, heroImage,
   introEyebrow, introHeading, introParagraph,
   mapImage, address, phone, email, hours, mapLocation, cta, seo
+}`;
+
+export const faqPageQuery = groq`*[_type == "faqPage" && _id == "faqPage"][0]{
+  heroEyebrow, heroHeading, heroDescription, generalHeading, generalDescription,
+  faqs[]{ _key, question, answer, order }, includeServiceFaqs,
+  ctaHeading, ctaDescription, ctaLabel, seo
 }`;

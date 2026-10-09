@@ -8,6 +8,7 @@ const SINGLETONS: { id: string; type: string; title: string }[] = [
   { id: "servicesPage", type: "servicesPage", title: "Services Page" },
   { id: "projectsPage", type: "projectsPage", title: "Projects Page" },
   { id: "contactPage", type: "contactPage", title: "Contact Page" },
+  { id: "faqPage", type: "faqPage", title: "FAQ Page" },
 ];
 
 export const structure: StructureResolver = (S) =>

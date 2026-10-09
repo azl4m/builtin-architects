@@ -4,6 +4,7 @@ import * as fallback from "./fallback-content";
 import type {
   CmsAboutPage,
   CmsContactPage,
+  CmsFaqPage,
   CmsCtaBand,
   CmsHomePage,
   CmsProject,
@@ -105,4 +106,8 @@ export function getProjectsPage(): Promise<CmsProjectsPage> {
 
 export function getContactPage(): Promise<CmsContactPage> {
   return safeFetch(q.contactPageQuery, {}, fallback.FALLBACK_CONTACT_PAGE);
+}
+
+export function getFaqPage(): Promise<CmsFaqPage | null> {
+  return safeFetch<CmsFaqPage | null>(q.faqPageQuery, {}, null);
 }
