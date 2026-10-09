@@ -5,7 +5,7 @@ import SmartImage from "@/components/SmartImage";
 import Reveal from "@/components/Reveal";
 import FaqAccordion from "@/components/FaqAccordion";
 import DimensionLine from "@/components/DimensionLine";
-import { getServiceBySlug, getServiceSlugs, getProjects } from "@/sanity/lib/fetchers";
+import { getServiceBySlug, getServiceSlugs, getProjects, getSiteSettings } from "@/sanity/lib/fetchers";
 import { serviceJsonLd, faqPageJsonLd } from "@/lib/jsonld";
 
 interface ServiceDetailPageProps {
@@ -19,15 +19,24 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: ServiceDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const service = await getServiceBySlug(slug);
+  const [service, settings] = await Promise.all([getServiceBySlug(slug), getSiteSettings()]);
   if (!service) return {};
 
-  const seoTitle = service.seo?.metaTitle || `${service.title} | BUILTIN Developers & Interiors`;
+  const targetTitles: Record<string, string> = {
+    architecture: "Architects",
+    "interior-design": "Interior Designers",
+    "interior-contracting": "Interior Contractors",
+    "building-construction": "Building Construction",
+  };
+  const location = settings.contactCity?.trim();
+  const serviceTitle = targetTitles[service.slug] || service.title;
+  const brand = [settings.siteName, settings.siteNameSub].filter(Boolean).join(" ");
+  const seoTitle = service.seo?.metaTitle || `${serviceTitle}${location ? ` in ${location}` : ""} | ${brand}`;
   const seoDesc = service.seo?.metaDescription || service.shortDescription;
   const canonical = service.seo?.canonicalUrl || `/services/${service.slug}`;
 
   return {
-    title: seoTitle,
+    title: { absolute: seoTitle },
     description: seoDesc,
     alternates: { canonical },
     openGraph: {

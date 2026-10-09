@@ -3,7 +3,7 @@ import { getProjectSlugs, getServiceSlugs } from "@/sanity/lib/fetchers";
 import { SITE_URL } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticRoutes = ["", "/about", "/services", "/projects", "/contact"].map((path) => ({
+  const staticRoutes = ["", "/about", "/services", "/projects", "/contact", "/faq"].map((path) => ({
     url: `${SITE_URL}${path}`,
     lastModified: new Date(),
   }));

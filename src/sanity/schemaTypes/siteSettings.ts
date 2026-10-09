@@ -34,6 +34,17 @@ export default defineType({
     defineField({ name: "contactState", title: "State", type: "string", initialValue: "Kerala" }),
     defineField({ name: "contactCountry", title: "Country", type: "string", initialValue: "India" }),
     defineField({ name: "businessPark", title: "Business Park / Location Details", type: "string" }),
+    defineField({
+      name: "whatsappNumber",
+      title: "Business WhatsApp number",
+      type: "string",
+      description: "Include the country code, for example +91 98765 43210. Used by the contact form.",
+      validation: (rule) => rule.custom((value) => {
+        if (!value) return true;
+        if (!/^\+?[\d\s()-]+$/.test(value)) return "Enter a phone number with country code, not a URL.";
+        return /^[1-9]\d{7,14}$/.test(value.replace(/\D/g, "")) || "Use 8–15 digits including the country code.";
+      }),
+    }),
     defineField({ name: "contactPhone", title: "Phone", type: "string" }),
     defineField({ name: "contactEmail", title: "Email", type: "string" }),
     defineField({ name: "contactHours", title: "Hours", type: "string" }),

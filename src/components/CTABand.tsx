@@ -1,7 +1,9 @@
-"use client";
+﻿"use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
 interface CTABandProps {
   eyebrow: string;
@@ -10,63 +12,55 @@ interface CTABandProps {
 }
 
 export default function CTABand({ eyebrow, heading, buttonLabel }: CTABandProps) {
+  const reduceMotion = useReducedMotion();
+  const entrance = {
+    initial: reduceMotion ? false as const : { opacity: 0, y: 18 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.2 },
+    transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] as const },
+  };
+
   return (
-    <section className="relative overflow-hidden bg-ivory py-16 md:py-24 px-6 md:px-16">
-      {/* Main Container: 2-Column Side-by-Side on Desktop (Image 7 cols, Text 5 cols), 3-Tier Stack on Mobile */}
-      <div className="relative z-20 mx-auto max-w-[1400px] grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-        
-        {/* 1. TOP ON MOBILE: Eyebrow Badge (Visible at top on mobile) */}
-        <div className="text-[13px] font-semibold tracking-[4px] text-accent uppercase max-md:text-[11px] max-md:tracking-[2px] max-lg:order-1 lg:hidden text-center">
-          {eyebrow || "READY TO BEGIN"}
-        </div>
-
-        {/* 2. MIDDLE ON MOBILE / LEFT ON DESKTOP: Larger 3D Floating Villa Model (7 cols on desktop) */}
+    <section className="relative overflow-hidden bg-ivory px-6 py-12 md:px-12 md:py-16 lg:px-16 lg:py-20">
+      <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-6 md:gap-8 lg:grid-cols-12 lg:gap-14">
         <motion.div
-          className="relative flex items-center justify-center w-full lg:col-span-7 lg:order-1 max-lg:order-2 py-2 md:py-4"
-          initial={{ opacity: 0, y: 30, scale: 0.95 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          {...entrance}
+          className="relative mx-auto aspect-square w-full max-w-[300px] sm:max-w-[360px] lg:col-span-6 lg:max-w-[560px]"
         >
-          {/* Soft Floor Shadow underneath 3D model */}
-          <div className="absolute bottom-[2%] left-1/2 -translate-x-1/2 w-[75%] h-[35px] rounded-full bg-black/15 blur-lg pointer-events-none" />
-
-          {/* Floating Transparent 3D Architectural Cutaway & Blueprint Model (Larger on Desktop) */}
-          <motion.img
-            src="https://res.cloudinary.com/r33neaxf/image/upload/v1788324008/ChatGPT_Image_Sep_1__2026__06_55_23_PM-removebg-preview_uveoat.png"
-            alt="3D Architectural & Construction Blueprint Model"
-            className="w-full max-w-[650px] lg:max-w-[880px] xl:max-w-[960px] h-auto object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.12)] pointer-events-none select-none"
-            animate={{ y: [0, -12, 0] }}
-            transition={{
-              repeat: Infinity,
-              repeatType: "mirror",
-              duration: 4.5,
-              ease: "easeInOut",
-            }}
+          <Image
+            src="/images/architecture-cta.png"
+            alt="Contemporary villa cutaway with detailed architectural blueprint linework"
+            fill
+            sizes="(min-width: 1024px) 560px, (min-width: 640px) 360px, 300px"
+            className="pointer-events-none select-none object-contain"
           />
         </motion.div>
 
-        {/* 3. BOTTOM ON MOBILE / RIGHT ON DESKTOP: Heading & CTA Button (5 cols on desktop) */}
-        <div className="w-full lg:col-span-5 lg:order-2 max-lg:order-3 flex flex-col max-lg:items-center lg:items-start text-center lg:text-left">
-          {/* Eyebrow Badge (Desktop view) */}
-          <div className="mb-4 text-[13px] font-semibold tracking-[4px] text-accent uppercase hidden lg:block">
-            {eyebrow || "READY TO BEGIN"}
-          </div>
-
-          {/* Main Heading */}
-          <h2 className="mb-6 max-w-[650px] font-display text-4xl md:text-5xl lg:text-[46px] xl:text-5xl font-semibold leading-[1.18] text-ink max-md:text-[28px]">
+        <motion.div
+          {...entrance}
+          className="flex flex-col items-center text-center lg:col-span-6 lg:items-start lg:text-left"
+        >
+          <p className="mb-3 text-[11px] font-semibold tracking-[3px] text-accent uppercase md:mb-4 md:text-xs">
+            {eyebrow || "Ready to begin"}
+          </p>
+          <h2 className="max-w-[560px] text-balance font-display text-[30px] leading-[1.2] font-semibold text-ink sm:text-4xl lg:text-[44px] xl:text-[46px]">
             {heading || "Let's build your dream project together"}
           </h2>
-
-          {/* CTA Button */}
+          <p className="mt-4 max-w-[430px] text-[15px] leading-7 text-body md:mt-5 md:text-base">
+            From your first idea to the final detail, we bring your vision to life.
+          </p>
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center rounded-[2px] bg-ink px-8 py-3.5 text-xs font-bold tracking-[1.5px] text-ivory uppercase transition-colors hover:bg-accent hover:text-ivory w-fit shadow-md"
+            className="group mt-6 inline-flex min-h-12 w-full max-w-[320px] items-center justify-center gap-3 rounded-[3px] bg-ink px-7 py-3.5 text-xs font-bold tracking-[1.2px] text-ivory uppercase shadow-sm transition-colors duration-200 hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:w-auto sm:max-w-none md:mt-7"
           >
-            {buttonLabel || "Start a Conversation"} →
+            {buttonLabel || "Start a Conversation"}
+            <ArrowRight
+              aria-hidden="true"
+              size={17}
+              className="shrink-0 transition-transform duration-200 group-hover:translate-x-1 group-focus-visible:translate-x-1 motion-reduce:transition-none motion-reduce:transform-none"
+            />
           </Link>
-        </div>
-
+        </motion.div>
       </div>
     </section>
   );

@@ -21,6 +21,20 @@ export interface FaqItem {
   order?: number;
 }
 
+export interface CmsFaqPage {
+  heroEyebrow?: string;
+  heroHeading?: string;
+  heroDescription?: string;
+  generalHeading?: string;
+  generalDescription?: string;
+  faqs?: FaqItem[] | null;
+  includeServiceFaqs?: boolean;
+  ctaHeading?: string;
+  ctaDescription?: string;
+  ctaLabel?: string;
+  seo?: SeoSettings;
+}
+
 export interface SocialLink {
   platform: string;
   url: string;
@@ -127,6 +141,7 @@ export interface CmsSiteSettings {
   contactState?: string;
   contactCountry?: string;
   businessPark?: string;
+  whatsappNumber?: string;
   contactPhone: string;
   contactEmail: string;
   contactHours: string;

@@ -57,6 +57,9 @@ export default function Footer({
             <Link href="/projects" className="text-footer-muted hover:text-ivory">
               Projects
             </Link>
+            <Link href="/faq" className="text-footer-muted hover:text-ivory">
+              FAQs
+            </Link>
           </div>
         </div>
 
