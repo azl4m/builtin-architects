@@ -17,3 +17,5 @@ These are proposed targets, not confirmed rankings or researched search-volume r
 - **GEO (generative engines):** Consistent business details, clear service/location information and verifiable project evidence. Inclusion in AI answers is not guaranteed.
 
 Track these phrases in Google Search Console. Update website content or Sanity SEO fields to target them; editing this file does not change the website.
+
+/g
