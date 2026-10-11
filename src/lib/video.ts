@@ -23,6 +23,8 @@ export function parseVideoEmbed(url: string): VideoEmbed | null {
     return null;
   }
 
+  if (!["http:", "https:"].includes(parsed.protocol)) return null;
+
   const host = parsed.hostname.replace(/^www\./, "");
 
   const youtubeId = getYouTubeId(parsed, host);

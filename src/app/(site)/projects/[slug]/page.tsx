@@ -9,6 +9,8 @@ import ProjectScrollytelling from "@/components/ProjectScrollytelling";
 import DimensionLine from "@/components/DimensionLine";
 import { getProjectBySlug, getProjectSlugs } from "@/sanity/lib/fetchers";
 import { projectJsonLd } from "@/lib/jsonld";
+import { urlFor } from "@/sanity/lib/image";
+import { parseVideoEmbed } from "@/lib/video";
 
 interface ProjectDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -56,10 +58,13 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
 
   if (!project) notFound();
 
-  const gallery = galleryLabels.map((label, i) => ({
-    label,
-    image: project.galleryImages[i] ?? null,
+  const gallery = project.galleryImages.filter((image) => urlFor(image)).slice(0, 6).map((image, i) => ({
+    label: galleryLabels[i],
+    image,
   }));
+  const afterImage = urlFor(project.heroImage) ? project.heroImage : gallery[0]?.image;
+  const videos = (project.videos?.length ? project.videos : project.videoUrl ? [{ _key: "legacy", url: project.videoUrl, posterImage: project.videoPosterImage }] : [])
+    .filter((video) => video.url && parseVideoEmbed(video.url)).slice(0, 3);
 
   const scrollItems = gallery.map((g, i) => {
     let caption: string | undefined;
@@ -76,35 +81,35 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         dangerouslySetInnerHTML={{ __html: JSON.stringify(projectJsonLd(project)) }}
       />
 
-      <section id="site-hero" className="relative min-h-[420px] md:min-h-[460px] w-full max-w-full overflow-hidden">
-        <SmartImage
+      <section id="site-hero" className="detail-hero relative w-full overflow-hidden">
+        {urlFor(project.heroImage) ? <SmartImage
           image={project.heroImage}
           alt={project.title}
           label={`${project.title} hero photo`}
           className="absolute inset-0 h-full w-full object-cover"
           priority
-        />
-        <div className="hero-overlay absolute inset-0" />
-        <div className="relative z-[2] flex max-w-[900px] flex-col justify-end px-16 pt-[120px] pb-14 max-lg:px-8 max-md:px-5 max-md:pt-28 max-md:pb-8">
-          <Reveal as="div" delay={0} className="mb-5 w-fit max-md:mb-2">
+        /> : <div className="absolute inset-0 bg-ink" />}
+        <div className="detail-hero-overlay absolute inset-0" />
+          <Reveal as="div" delay={0} className="absolute top-[112px] left-16 z-[3] w-fit max-lg:left-8 max-md:top-[96px] max-md:left-6">
             <Link
               href="/projects"
-              className="inline-block text-[13px] tracking-[1px] text-accent-light max-md:text-[12px]"
+              className="detail-hero-back"
             >
               ← All Projects
             </Link>
           </Reveal>
+        <div className="detail-hero-content relative z-[2] w-full max-w-[960px]">
           <Reveal
             as="div"
             delay={0.09}
-            className="mb-3.5 text-[13px] font-semibold tracking-[4px] text-accent-light uppercase max-md:mb-2 max-md:text-[11px] max-md:tracking-[2px]"
+            className="detail-hero-badge mb-3.5"
           >
             {project.status}
           </Reveal>
           <Reveal
             as="h1"
             delay={0.18}
-            className="font-display text-[58px] leading-[1.08] font-semibold text-ivory max-lg:text-[40px] max-md:text-[28px] max-sm:text-[22px] break-words text-balance"
+            className="detail-hero-title font-display"
           >
             {project.title}
           </Reveal>
@@ -140,7 +145,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         </div>
       </section>
 
-      {project.beforeImage ? (
+      {project.beforeImage && urlFor(project.beforeImage) && afterImage ? (
         <section className="mx-auto max-w-[1400px] px-16 py-[100px] max-lg:px-8 max-md:px-5 max-md:py-12 w-full max-w-full overflow-hidden">
           <div className="mb-[18px] flex items-center gap-3 text-[13px] font-semibold tracking-[4px] text-accent uppercase max-md:text-[11px] max-md:tracking-[2px]">
             Before / After
@@ -151,14 +156,14 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           </h2>
           <BeforeAfterSlider
             beforeImage={project.beforeImage}
-            afterImage={project.heroImage ?? project.galleryImages[0]}
+            afterImage={afterImage}
             title={project.title}
             className="h-[560px] max-lg:h-[440px] max-md:h-[320px] max-sm:h-[240px] w-full overflow-hidden rounded-[4px]"
           />
         </section>
       ) : null}
 
-      <section className="bg-alt px-16 py-[100px] max-lg:px-8 max-md:px-5 max-md:py-12 w-full max-w-full overflow-hidden">
+      {scrollItems.length > 0 && <section className="bg-alt px-16 py-[100px] max-lg:px-8 max-md:px-5 max-md:py-12 w-full max-w-full overflow-hidden">
         <div className="mx-auto max-w-[1400px]">
           <div className="mb-[18px] flex items-center gap-3 text-[13px] font-semibold tracking-[4px] text-accent uppercase max-md:text-[11px] max-md:tracking-[2px]">
             Gallery
@@ -169,21 +174,20 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           </h2>
           <ProjectScrollytelling items={scrollItems} />
         </div>
-      </section>
+      </section>}
 
-      <section className="mx-auto max-w-[1400px] px-16 py-[100px] max-lg:px-8 max-md:px-5 max-md:py-12 w-full max-w-full overflow-hidden">
+      {videos.length > 0 && <section className="mx-auto max-w-[1400px] px-16 py-[100px] max-lg:px-8 max-md:px-5 max-md:py-12 w-full max-w-full overflow-hidden">
         <div className="mb-[18px] text-[13px] font-semibold tracking-[4px] text-accent uppercase max-md:text-[11px] max-md:tracking-[2px]">
           Walkthrough
         </div>
         <h2 className="mb-8 md:mb-12 font-display text-[38px] font-semibold max-lg:text-[30px] max-md:text-[24px]">
-          Project Video
+          Project Films
         </h2>
         <ProjectVideo
-          videoUrl={project.videoUrl}
-          posterImage={project.videoPosterImage}
+          videos={videos}
           title={project.title}
         />
-      </section>
+      </section>}
     </>
   );
 }

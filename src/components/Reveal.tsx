@@ -56,7 +56,7 @@ export default function Reveal({
   hoverLift = false,
 }: RevealProps) {
   const MotionTag = TAGS[as];
-  const StaticTag = STATIC_TAGS[as] as any;
+  const StaticTag = STATIC_TAGS[as];
   const variants = buildVariants(direction, delay);
   const interaction = hoverLift ? { whileHover: HOVER_LIFT, whileTap: TAP_PRESS } : {};
 

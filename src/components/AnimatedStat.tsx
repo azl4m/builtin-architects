@@ -26,12 +26,7 @@ export default function AnimatedStat({ value, className = "" }: AnimatedStatProp
   const [display, setDisplay] = useState(0);
 
   useEffect(() => {
-    if (target === null || !isInView) return;
-
-    if (shouldReduceMotion) {
-      setDisplay(target);
-      return;
-    }
+    if (target === null || !isInView || shouldReduceMotion) return;
 
     const controls = animate(motionValue, target, {
       duration: 1.4,
@@ -51,7 +46,7 @@ export default function AnimatedStat({ value, className = "" }: AnimatedStatProp
 
   return (
     <span ref={ref} className={className}>
-      {display}
+      {shouldReduceMotion ? target : display}
       {suffix}
     </span>
   );

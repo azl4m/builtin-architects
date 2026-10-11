@@ -21,6 +21,7 @@ const projectFields = /* groq */ `
   desc2,
   "galleryImages": coalesce(galleryImages, []),
   videoUrl,
+  "videos": coalesce(videos, []),
   videoPosterImage,
   services[]->{ _id, title, "slug": slug.current },
   "features": coalesce(features, []),

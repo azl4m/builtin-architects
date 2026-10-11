@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import MuxPlayer from "@mux/mux-player-react";
 
 interface HeroVideoProps {
@@ -16,20 +16,28 @@ interface HeroVideoProps {
  * - Checks reduced motion & save-data preferences.
  * - Enforces GPU acceleration and disables pointer interaction/controls.
  */
+function videoAllowed() {
+  return !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+    !(navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+}
+
+function subscribeToPreferences(update: () => void) {
+  const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const connection = (navigator as Navigator & { connection?: EventTarget }).connection;
+  motion.addEventListener("change", update);
+  connection?.addEventListener("change", update);
+  return () => {
+    motion.removeEventListener("change", update);
+    connection?.removeEventListener("change", update);
+  };
+}
+
+const serverSnapshot = () => false;
+
 export default function HeroVideo({ playbackId, className = "" }: HeroVideoProps) {
-  const [canPlayVideo, setCanPlayVideo] = useState(false);
+  const canPlayVideo = useSyncExternalStore(subscribeToPreferences, videoAllowed, serverSnapshot);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasError, setHasError] = useState(false);
-
-  useEffect(() => {
-    // Check reduced motion & data saver preferences
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isSaveData = (navigator as unknown as { connection?: { saveData?: boolean } }).connection?.saveData;
-
-    if (!prefersReducedMotion && !isSaveData) {
-      setCanPlayVideo(true);
-    }
-  }, []);
 
   if (!canPlayVideo || hasError) return null;
 
