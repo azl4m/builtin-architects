@@ -29,11 +29,10 @@ export default function Header({ siteName, siteNameSub, logo, services = [] }: H
   useEffect(() => {
     const hero = document.getElementById("site-hero");
     if (!hero) {
-      setScrolled(true);
-      return;
+      const frame = requestAnimationFrame(() => setScrolled(true));
+      return () => cancelAnimationFrame(frame);
     }
 
-    setScrolled(false);
     const observer = new IntersectionObserver(([entry]) => setScrolled(!entry.isIntersecting), {
       rootMargin: "-90px 0px 0px 0px",
       threshold: 0,

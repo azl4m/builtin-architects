@@ -1,4 +1,4 @@
-import { defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType } from "sanity";
 
 export default defineType({
   name: "project",
@@ -127,13 +127,31 @@ export default defineType({
     defineField({
       name: "galleryImages",
       title: "Gallery images",
-      description: "First image is shown large; the rest fill the smaller gallery slots, in order.",
+      description: "Add up to 6 gallery images. Only uploaded images appear on the website; leave empty to hide the gallery.",
       type: "array",
       of: [{ type: "image", options: { hotspot: true } }],
+      validation: (rule) => rule.max(6),
+    }),
+    defineField({
+      name: "videos",
+      title: "Project reels",
+      description: "Add up to 3 portrait videos using Cloudinary delivery URLs. Leave empty to hide this section. If an older walkthrough URL is present, it is used until reels are added.",
+      type: "array",
+      validation: (rule) => rule.max(3),
+      of: [defineArrayMember({
+        name: "projectReel", title: "Reel", type: "object",
+        fields: [
+          defineField({ name: "title", title: "Video title", type: "string", description: "For example: Exterior, Interiors, or Walkthrough." }),
+          defineField({ name: "url", title: "Video URL", type: "url", validation: (rule) => rule.required().uri({ scheme: ["https"] }) }),
+          defineField({ name: "posterImage", title: "Cover image (optional)", type: "image", options: { hotspot: true } }),
+        ],
+        preview: { select: { title: "title", subtitle: "url", media: "posterImage" }, prepare: ({ title, subtitle, media }) => ({ title: title || "Project reel", subtitle, media }) },
+      })],
     }),
     defineField({
       name: "videoUrl",
       title: "Walkthrough video URL",
+      hidden: ({ document }) => !document?.videoUrl,
       description:
         "Paste the video's link here — a Cloudinary delivery URL, a YouTube link, or a Vimeo link all work. The video is not uploaded to Sanity; upload it to Cloudinary (or YouTube/Vimeo) first, then paste the resulting URL here.",
       type: "url",
@@ -143,6 +161,7 @@ export default defineType({
     defineField({
       name: "videoPosterImage",
       title: "Video poster image (optional)",
+      hidden: ({ document }) => !document?.videoUrl,
       description:
         "Thumbnail shown before the video is played. Optional for Cloudinary and YouTube links — those auto-generate a first-frame thumbnail if you leave this empty. Upload one here only if you want a specific frame or a Vimeo link.",
       type: "image",

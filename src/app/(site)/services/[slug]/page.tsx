@@ -86,7 +86,7 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
       )}
 
       {/* Hero Section */}
-      <section id="site-hero" className="relative h-[56vh] min-h-[420px] overflow-hidden">
+      <section id="site-hero" className="detail-hero relative w-full overflow-hidden">
         <SmartImage
           image={service.image}
           alt={service.title}
@@ -94,26 +94,31 @@ export default async function ServiceDetailPage({ params }: ServiceDetailPagePro
           className="absolute inset-0 h-full w-full"
           priority
         />
-        <div className="hero-overlay absolute inset-0" />
-        <div className="absolute inset-0 z-30 flex max-w-[820px] flex-col justify-end px-16 pb-14 max-md:px-6 max-md:pb-8">
+        <div className="detail-hero-overlay absolute inset-0" />
+        <div className="detail-hero-content relative z-[2] w-full max-w-[960px]">
+          <Reveal as="div" delay={0} className="mb-5 w-fit">
+            <Link href="/services" className="detail-hero-back">
+              ← All Services
+            </Link>
+          </Reveal>
           <Reveal
             as="div"
             delay={0}
-            className="mb-4 text-[13px] font-semibold tracking-[4px] text-accent-light uppercase max-md:mb-2 max-md:text-[11px] max-md:tracking-[2px]"
+            className="detail-hero-badge mb-3.5"
           >
             Service {service.numberLabel}
           </Reveal>
           <Reveal
             as="h1"
             delay={0.09}
-            className="mb-5 font-display text-[56px] leading-[1.1] font-semibold text-ivory max-lg:text-[44px] max-md:mb-2 max-md:text-[28px]"
+            className="detail-hero-title mb-4 font-display"
           >
             {service.heroTitle || service.title}
           </Reveal>
           <Reveal
             as="p"
             delay={0.18}
-            className="text-[17px] leading-[1.7] text-[#dce3f2] max-md:text-[13px] max-md:leading-[1.5]"
+            className="max-w-[640px] text-[17px] leading-[1.7] text-white/85 max-md:text-[14px] max-md:leading-[1.6]"
           >
             {service.heroDescription || service.shortDescription}
           </Reveal>

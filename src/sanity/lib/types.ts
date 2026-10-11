@@ -47,6 +47,13 @@ export type ProjectCategory =
   | "Interior Contracting"
   | "Building Construction";
 
+export interface ProjectReel {
+  _key: string;
+  title?: string;
+  url: string;
+  posterImage?: SanityImageValue | null;
+}
+
 export interface CmsProject {
   _id: string;
   title: string;
@@ -68,6 +75,7 @@ export interface CmsProject {
   desc2: string;
   galleryImages: SanityImageValue[];
   videoUrl: string | null;
+  videos?: ProjectReel[];
   videoPosterImage: SanityImageValue | null;
   services?: { _ref: string; _type: "reference" }[];
   features?: string[];

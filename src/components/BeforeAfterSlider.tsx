@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { ReactCompareSlider, ReactCompareSliderImage } from "react-compare-slider";
 import { urlFor } from "@/sanity/lib/image";
 import type { SanityImageValue } from "@/sanity/lib/types";
@@ -23,9 +23,12 @@ interface BeforeAfterSliderProps {
  * sidesteps that entirely — it's a drag interaction with no real reason to
  * exist in the server-rendered HTML anyway.
  */
+const subscribe = () => () => {};
+const clientSnapshot = () => true;
+const serverSnapshot = () => false;
+
 export default function BeforeAfterSlider({ beforeImage, afterImage, title, className = "" }: BeforeAfterSliderProps) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const mounted = useSyncExternalStore(subscribe, clientSnapshot, serverSnapshot);
 
   const beforeSrc = urlFor(beforeImage)?.width(1600).fit("max").auto("format").url();
   const afterSrc = urlFor(afterImage)?.width(1600).fit("max").auto("format").url();

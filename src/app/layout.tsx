@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope, Sora } from "next/font/google";
 import { MotionConfig } from "framer-motion";
-import { SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
+import { SITE_URL } from "@/lib/site";
 import { organizationJsonLd } from "@/lib/jsonld";
 import "./globals.css";
 
